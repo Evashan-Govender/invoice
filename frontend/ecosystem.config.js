@@ -13,7 +13,7 @@ module.exports = {
     max_restarts: 10,
     restart_delay: 4000,
     env: {
-      NODE_ENV: 'production',
+      NODE_ENV: 'dev',
       PORT: 80,
       NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
     },
