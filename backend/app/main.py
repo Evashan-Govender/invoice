@@ -7,6 +7,7 @@ from .routers.integrations import router as integrations_router
 from .routers.settings import router as settings_router
 from .services.background_tasks import start_background_tasks, stop_background_tasks
 from .migrations import run_migrations
+import os
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -32,9 +33,24 @@ app = FastAPI(
 )
 
 # Configure CORS
+# Get allowed origins from environment variable or use defaults
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+if cors_origins_env:
+    # Split comma-separated origins from environment variable
+    allowed_origins = [origin.strip() for origin in cors_origins_env.split(",")]
+else:
+    # Default origins: localhost and the specified IP
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://localhost",
+        "http://20.157.84.59",
+        "http://20.157.84.59:80",
+        "http://20.157.84.59:3000",
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
