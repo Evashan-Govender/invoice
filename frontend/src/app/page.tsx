@@ -23,7 +23,7 @@ export default function Home() {
         <div className="w-16 h-16 mx-auto mb-6">
           <div className="w-full h-full bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-slate-200/50 animate-pulse p-3">
             <Image 
-              src="/AFA Ranged Logo Dark.png" 
+              src="/AFA-Ranged-Logo-Dark.png" 
               alt="AFA ZeroTouch AP" 
               width={40} 
               height={40}

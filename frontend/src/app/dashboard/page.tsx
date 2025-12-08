@@ -362,7 +362,7 @@ export default function DashboardPage() {
           <div className="flex items-center space-x-3">
             <div className="w-11 h-11 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30 p-2">
               <Image 
-                src="/AFA Ranged Logo White.png" 
+                src="/AFA-Ranged-Logo-White.png" 
                 alt="AFA ZeroTouch AP" 
                 width={28} 
                 height={28}

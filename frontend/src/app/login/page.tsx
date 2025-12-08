@@ -56,7 +56,7 @@ export default function LoginPage() {
             <div className="flex items-center space-x-4 mb-8">
               <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-2xl p-2">
                 <Image 
-                  src="/AFA Ranged Logo White.png" 
+                  src="/AFA-Ranged-Logo-White.png" 
                   alt="AFA ZeroTouch AP" 
                   width={40} 
                   height={40}
@@ -105,7 +105,7 @@ export default function LoginPage() {
             <div className="inline-flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-slate-200/50 p-2">
                 <Image 
-                  src="/AFA Ranged Logo Dark.png" 
+                  src="/AFA-Ranged-Logo-Dark.png" 
                   alt="AFA ZeroTouch AP" 
                   width={32} 
                   height={32}
