@@ -9,7 +9,7 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: 'Invoice AI - Intelligent Invoice Processing',
+  title: 'AFA ZeroTouch AP™ - Intelligent Invoice Processing',
   description: 'AI-powered invoice data extraction and ERP integration using Gemini Vision',
   icons: {
     icon: '/favicon.ico',
