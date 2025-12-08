@@ -11,8 +11,28 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from app.database import engine, Base, SessionLocal
 from app.models import User, UserSettings
-from app.auth import get_password_hash
 from app.migrations import run_migrations
+
+# Import password hashing with fallback for bcrypt compatibility
+try:
+    from app.auth import get_password_hash
+except Exception as e:
+    print(f"⚠️  Warning: Could not import get_password_hash from app.auth: {e}")
+    print("   Using direct bcrypt as fallback...")
+    # Fallback to direct bcrypt if passlib has issues
+    try:
+        import bcrypt
+        def get_password_hash(password: str) -> str:
+            """Hash a password using bcrypt directly"""
+            # Ensure password is bytes and not longer than 72 bytes (bcrypt limit)
+            password_bytes = password.encode('utf-8')
+            if len(password_bytes) > 72:
+                password_bytes = password_bytes[:72]
+            salt = bcrypt.gensalt()
+            return bcrypt.hashpw(password_bytes, salt).decode('utf-8')
+    except ImportError:
+        print("❌ Error: bcrypt is not installed. Please install it: pip install bcrypt")
+        raise
 
 def create_tables():
     """Create all database tables"""
