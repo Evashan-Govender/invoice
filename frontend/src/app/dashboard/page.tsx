@@ -943,8 +943,7 @@ export default function DashboardPage() {
                   id="folder-upload"
                   type="file"
                   multiple
-                  webkitdirectory=""
-                  directory=""
+                  {...({ webkitdirectory: '', directory: '' } as any)}
                   accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff"
                   className="hidden"
                   onChange={(e) => {
@@ -1309,6 +1308,7 @@ export default function DashboardPage() {
                     </tbody>
                   </table>
                 </div>
+                </>
               )}
             </div>
           )}

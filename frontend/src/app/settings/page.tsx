@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { api } from '@/lib/api';
@@ -134,7 +134,7 @@ const integrationData: Integration[] = [
   },
 ];
 
-export default function SettingsPage() {
+function SettingsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -1761,5 +1761,20 @@ export default function SettingsPage() {
         type={alertModal.type}
       />
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="spinner w-12 h-12 border-4 border-violet-600 mx-auto"></div>
+          <p className="mt-4 text-slate-600 font-medium">Loading settings...</p>
+        </div>
+      </div>
+    }>
+      <SettingsPageContent />
+    </Suspense>
   );
 }
