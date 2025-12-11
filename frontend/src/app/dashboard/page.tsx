@@ -1154,7 +1154,7 @@ export default function DashboardPage() {
                               )}
                             </td>
                             <td className="table-cell">
-                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-3">
                               <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                                 isImageFile(invoice.filename)
                                   ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
