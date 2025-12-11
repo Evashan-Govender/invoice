@@ -111,40 +111,34 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={item.unit_price}
-                        onChange={(e) =>
-                          handleItemChange(
-                            index,
-                            'unit_price',
-                            parseFloat(e.target.value) || 0
-                          )
-                        }
-                        className="w-full px-3 pl-7 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all text-right font-mono"
-                      />
-                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={item.unit_price}
+                      onChange={(e) =>
+                        handleItemChange(
+                          index,
+                          'unit_price',
+                          parseFloat(e.target.value) || 0
+                        )
+                      }
+                      className="w-full px-3 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all text-right font-mono"
+                    />
                   </td>
                   <td className="px-4 py-3">
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-500 text-sm font-medium">$</span>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={item.total_price}
-                        onChange={(e) =>
-                          handleItemChange(
-                            index,
-                            'total_price',
-                            parseFloat(e.target.value) || 0
-                          )
-                        }
-                        className="w-full px-3 pl-7 py-2 bg-violet-50 border border-violet-100 rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all text-right font-mono font-semibold text-violet-700"
-                      />
-                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={item.total_price}
+                      onChange={(e) =>
+                        handleItemChange(
+                          index,
+                          'total_price',
+                          parseFloat(e.target.value) || 0
+                        )
+                      }
+                      className="w-full px-3 py-2 bg-violet-50 border border-violet-100 rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all text-right font-mono font-semibold text-violet-700"
+                    />
                   </td>
                   <td className="px-4 py-3 text-center">
                     <button
@@ -171,7 +165,7 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Subtotal ({items.length} items)</span>
               <span className="font-mono font-medium text-slate-700">
-                ${items.reduce((sum, item) => sum + (item.total_price || 0), 0).toFixed(2)}
+                {items.reduce((sum, item) => sum + (item.total_price || 0), 0).toFixed(2)}
               </span>
             </div>
           </div>

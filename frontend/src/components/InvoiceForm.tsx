@@ -60,12 +60,17 @@ export default function InvoiceForm({ data, onChange, onFieldFocus }: InvoiceFor
               </svg>
             </div>
             <input
-              type="text"
+              type="date"
               value={data.date || ''}
-              onChange={(e) => handleChange('date', e.target.value)}
+              onChange={(e) => {
+                const dateValue = e.target.value;
+                if (dateValue) {
+                  handleChange('date', dateValue);
+                }
+              }}
               onFocus={() => handleFocus('Invoice Date')}
               className="input pl-12"
-              placeholder="2025-01-01"
+              required
             />
           </div>
         </div>
@@ -157,56 +162,41 @@ export default function InvoiceForm({ data, onChange, onFieldFocus }: InvoiceFor
 
           <div>
             <label className="label">Subtotal</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span className="text-slate-400 font-medium">$</span>
-              </div>
-              <input
-                type="number"
-                step="0.01"
-                value={data.subtotal || 0}
-                onChange={(e) =>
-                  handleChange('subtotal', parseFloat(e.target.value) || 0)
-                }
-                className="input pl-10 text-right font-mono"
-              />
-            </div>
+            <input
+              type="number"
+              step="0.01"
+              value={data.subtotal || 0}
+              onChange={(e) =>
+                handleChange('subtotal', parseFloat(e.target.value) || 0)
+              }
+              className="input text-right font-mono"
+            />
           </div>
 
           <div>
             <label className="label">Tax</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span className="text-slate-400 font-medium">$</span>
-              </div>
-              <input
-                type="number"
-                step="0.01"
-                value={data.tax || 0}
-                onChange={(e) =>
-                  handleChange('tax', parseFloat(e.target.value) || 0)
-                }
-                className="input pl-10 text-right font-mono"
-              />
-            </div>
+            <input
+              type="number"
+              step="0.01"
+              value={data.tax || 0}
+              onChange={(e) =>
+                handleChange('tax', parseFloat(e.target.value) || 0)
+              }
+              className="input text-right font-mono"
+            />
           </div>
 
           <div>
             <label className="label">Total Amount</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span className="text-violet-600 font-bold">$</span>
-              </div>
-              <input
-                type="number"
-                step="0.01"
-                value={data.total_amount || 0}
-                onChange={(e) =>
-                  handleChange('total_amount', parseFloat(e.target.value) || 0)
-                }
-                className="input pl-10 text-right font-mono font-bold text-violet-700 bg-violet-50 border-violet-200 focus:border-violet-400 focus:ring-violet-100"
-              />
-            </div>
+            <input
+              type="number"
+              step="0.01"
+              value={data.total_amount || 0}
+              onChange={(e) =>
+                handleChange('total_amount', parseFloat(e.target.value) || 0)
+              }
+              className="input text-right font-mono font-bold text-violet-700 bg-violet-50 border-violet-200 focus:border-violet-400 focus:ring-violet-100"
+            />
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import PDFViewerWithHighlight from '@/components/PDFViewerWithHighlight';
+import ImageViewer from '@/components/ImageViewer';
 import InvoiceForm from '@/components/InvoiceForm';
 import LineItemsTable from '@/components/LineItemsTable';
 import ERPSyncButton from '@/components/ERPSyncButton';
@@ -192,8 +193,21 @@ export default function InvoiceDetailPage({ params }: PageProps) {
     }
   };
 
+  const isImageFile = (filename: string) => {
+    const ext = filename.toLowerCase().substring(filename.lastIndexOf('.'));
+    return ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff'].includes(ext);
+  };
+
   const handleBack = () => {
-    router.push('/dashboard');
+    // Check if we came from settings
+    const fromSettings = sessionStorage.getItem('fromSettings') === 'true';
+    if (fromSettings) {
+      sessionStorage.removeItem('fromSettings');
+      router.back();
+    } else {
+      // Go to invoice list in dashboard
+      router.push('/dashboard?view=invoices');
+    }
   };
 
   if (loading) {
@@ -368,13 +382,20 @@ export default function InvoiceDetailPage({ params }: PageProps) {
 
       {/* Main Content */}
       <main className="max-w-full h-[calc(100vh-80px)] flex">
-        {/* PDF Viewer - Left Side */}
+        {/* PDF/Image Viewer - Left Side */}
         <div className="w-1/2 h-full border-r border-slate-200 bg-white overflow-hidden">
-          <PDFViewerWithHighlight 
-            pdfUrl={pdfUrl} 
-            highlightRegion={highlightRegion}
-            activeField={activeSection}
-          />
+          {invoice && isImageFile(invoice.filename) ? (
+            <ImageViewer 
+              imageUrl={pdfUrl} 
+              filename={invoice.filename}
+            />
+          ) : (
+            <PDFViewerWithHighlight 
+              pdfUrl={pdfUrl} 
+              highlightRegion={highlightRegion}
+              activeField={activeSection}
+            />
+          )}
         </div>
 
         {/* Data Editor - Right Side */}

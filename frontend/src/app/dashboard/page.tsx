@@ -52,6 +52,8 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [activeView, setActiveView] = useState<'dashboard' | 'upload' | 'invoices'>('dashboard');
+  const [selectedInvoices, setSelectedInvoices] = useState<Set<number>>(new Set());
+  const [bulkProcessing, setBulkProcessing] = useState(false);
   const [stats, setStats] = useState<Stats>({
     totalInvoices: 0,
     completed: 0,
@@ -208,6 +210,15 @@ export default function DashboardPage() {
     init();
   }, [router, loadInvoices]);
 
+  // Check URL params for view
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('view');
+    if (view === 'invoices') {
+      setActiveView('invoices');
+    }
+  }, []);
+
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -308,6 +319,63 @@ export default function DashboardPage() {
         newSet.delete(invoiceId);
         return newSet;
       });
+    }
+  };
+
+  const handleBulkProcess = async () => {
+    if (selectedInvoices.size === 0) {
+      showAlert('Please select at least one invoice to process', 'warning');
+      return;
+    }
+
+    setBulkProcessing(true);
+    const invoiceIds = Array.from(selectedInvoices);
+    const pendingInvoices = invoices.filter(inv => inv.status === 'pending' && invoiceIds.includes(inv.id));
+    
+    try {
+      // Process all selected pending invoices
+      for (const invoice of pendingInvoices) {
+        setProcessing((prev) => new Set(prev).add(invoice.id));
+        try {
+          await api.processInvoice(invoice.id);
+        } catch (err: any) {
+          console.error(`Error processing invoice ${invoice.id}:`, err);
+        } finally {
+          setProcessing((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(invoice.id);
+            return newSet;
+          });
+        }
+      }
+      await loadInvoices();
+      setSelectedInvoices(new Set());
+      showAlert(`Successfully processed ${pendingInvoices.length} invoice(s)`, 'success');
+    } catch (err: any) {
+      showAlert('Error processing invoices. Please try again.', 'error');
+    } finally {
+      setBulkProcessing(false);
+    }
+  };
+
+  const handleSelectInvoice = (invoiceId: number) => {
+    setSelectedInvoices((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(invoiceId)) {
+        newSet.delete(invoiceId);
+      } else {
+        newSet.add(invoiceId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    const pendingInvoices = invoices.filter(inv => inv.status === 'pending');
+    if (selectedInvoices.size === pendingInvoices.length) {
+      setSelectedInvoices(new Set());
+    } else {
+      setSelectedInvoices(new Set(pendingInvoices.map(inv => inv.id)));
     }
   };
 
@@ -858,6 +926,59 @@ export default function DashboardPage() {
                 </div>
               </div>
 
+              {/* Bulk Upload from Folder */}
+              <div className="card p-6 mb-8">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900">Bulk Upload from Folder</h3>
+                    <p className="text-sm text-slate-500">Upload up to 5 invoices from a folder</p>
+                  </div>
+                </div>
+                <input
+                  id="folder-upload"
+                  type="file"
+                  multiple
+                  webkitdirectory=""
+                  directory=""
+                  accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      const files = Array.from(e.target.files).slice(0, 5);
+                      handleFiles(files);
+                    }
+                  }}
+                  disabled={uploading}
+                />
+                <label htmlFor="folder-upload" className="cursor-pointer">
+                  <div className="border-2 border-dashed border-indigo-300 rounded-xl p-8 text-center hover:bg-indigo-50 transition-colors">
+                    <svg className="w-12 h-12 text-indigo-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                    </svg>
+                    <p className="text-indigo-600 font-semibold text-lg mb-2">Select Folder</p>
+                    <p className="text-sm text-slate-500">Choose a folder containing invoice files (max 5 files)</p>
+                  </div>
+                </label>
+                {uploadedFiles.length > 0 && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => setActiveView('invoices')}
+                      className="btn-secondary w-full"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      View Uploaded Invoices
+                    </button>
+                  </div>
+                )}
+              </div>
+
               {/* File List */}
               {uploadedFiles.length > 0 && (
                 <div className="card p-6 animate-slide-up">
@@ -961,22 +1082,78 @@ export default function DashboardPage() {
                   </button>
                 </div>
               ) : (
-                <div className="table-container">
-                  <table className="table">
-                    <thead className="table-header">
-                      <tr>
-                        <th className="table-header-cell">Invoice</th>
-                        <th className="table-header-cell">Vendor / Category</th>
-                        <th className="table-header-cell">Amount</th>
-                        <th className="table-header-cell">Status</th>
-                        <th className="table-header-cell">Confidence</th>
-                        <th className="table-header-cell">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="table-body">
-                      {invoices.map((invoice) => (
-                        <tr key={invoice.id} className="table-row">
-                          <td className="table-cell">
+                <>
+                  {/* Bulk Actions Bar */}
+                  {selectedInvoices.size > 0 && (
+                    <div className="mb-4 p-4 bg-violet-50 border border-violet-200 rounded-xl flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-sm font-semibold text-violet-900">
+                          {selectedInvoices.size} invoice{selectedInvoices.size !== 1 ? 's' : ''} selected
+                        </span>
+                        <button
+                          onClick={() => setSelectedInvoices(new Set())}
+                          className="text-sm text-violet-600 hover:text-violet-700 font-medium"
+                        >
+                          Clear selection
+                        </button>
+                      </div>
+                      <button
+                        onClick={handleBulkProcess}
+                        disabled={bulkProcessing}
+                        className="btn-primary"
+                      >
+                        {bulkProcessing ? (
+                          <span className="flex items-center space-x-2">
+                            <div className="spinner w-4 h-4"></div>
+                            <span>Processing...</span>
+                          </span>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Process Selected
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="table-container">
+                    <table className="table">
+                      <thead className="table-header">
+                        <tr>
+                          <th className="table-header-cell w-12">
+                            <input
+                              type="checkbox"
+                              checked={invoices.filter(inv => inv.status === 'pending').length > 0 && 
+                                      selectedInvoices.size === invoices.filter(inv => inv.status === 'pending').length}
+                              onChange={handleSelectAll}
+                              className="w-4 h-4 text-violet-600 border-slate-300 rounded focus:ring-violet-500"
+                            />
+                          </th>
+                          <th className="table-header-cell">Invoice</th>
+                          <th className="table-header-cell">Vendor / Category</th>
+                          <th className="table-header-cell">Amount</th>
+                          <th className="table-header-cell">Status</th>
+                          <th className="table-header-cell">Confidence</th>
+                          <th className="table-header-cell">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="table-body">
+                        {invoices.map((invoice) => (
+                          <tr key={invoice.id} className="table-row">
+                            <td className="table-cell">
+                              {invoice.status === 'pending' && (
+                                <input
+                                  type="checkbox"
+                                  checked={selectedInvoices.has(invoice.id)}
+                                  onChange={() => handleSelectInvoice(invoice.id)}
+                                  className="w-4 h-4 text-violet-600 border-slate-300 rounded focus:ring-violet-500"
+                                />
+                              )}
+                            </td>
+                            <td className="table-cell">
                             <div className="flex items-center space-x-3">
                               <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                                 isImageFile(invoice.filename)
@@ -1021,7 +1198,7 @@ export default function DashboardPage() {
                           <td className="table-cell">
                             {invoice.total_amount != null ? (
                               <span className="font-semibold text-slate-900">
-                                ${invoice.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                {invoice.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </span>
                             ) : (
                               <span className="text-slate-400">—</span>
@@ -1084,7 +1261,11 @@ export default function DashboardPage() {
                               )}
                               {invoice.status === 'completed' && (
                                 <button
-                                  onClick={() => router.push(`/invoices/${invoice.id}`)}
+                                  onClick={() => {
+                                    // Store that we're coming from invoice list
+                                    sessionStorage.setItem('invoiceListSource', 'true');
+                                    router.push(`/invoices/${invoice.id}`);
+                                  }}
                                   className="btn-success py-1.5 px-4 text-xs"
                                 >
                                   View & Edit

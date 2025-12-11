@@ -97,7 +97,16 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
   if (activeConnectors.length === 0) {
     return (
       <button
-        onClick={() => router.push('/settings')}
+        onClick={() => {
+          // Get invoice ID from URL if available
+          const invoiceId = window.location.pathname.match(/\/invoices\/(\d+)/)?.[1];
+          if (invoiceId) {
+            sessionStorage.setItem('fromSettings', 'true');
+            router.push(`/settings?from=invoice&invoiceId=${invoiceId}`);
+          } else {
+            router.push('/settings');
+          }
+        }}
         className="btn-secondary group"
       >
         <svg className="w-4 h-4 mr-2 text-slate-400 group-hover:text-violet-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,7 +273,15 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
           {/* Footer */}
           <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100">
             <button
-              onClick={() => router.push('/settings')}
+              onClick={() => {
+                const invoiceId = window.location.pathname.match(/\/invoices\/(\d+)/)?.[1];
+                if (invoiceId) {
+                  sessionStorage.setItem('fromSettings', 'true');
+                  router.push(`/settings?from=invoice&invoiceId=${invoiceId}`);
+                } else {
+                  router.push('/settings');
+                }
+              }}
               className="w-full flex items-center justify-center space-x-1 text-xs text-slate-500 hover:text-violet-600 transition-colors font-medium"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
