@@ -8,16 +8,7 @@ module.exports = {
       instances: 1,
       exec_mode: 'fork',
       autorestart: true,
-      watch: true,
-      watch_delay: 1000,
-      ignore_watch: [
-        'node_modules',
-        '.next',
-        'logs',
-        '*.log',
-        '.git',
-        'public'
-      ],
+      watch: false,  // Disable watch mode to prevent rapid restarts
       max_memory_restart: '1G',
       min_uptime: '10s',
       max_restarts: 10,
