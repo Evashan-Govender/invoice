@@ -197,7 +197,7 @@ function SettingsPageContent() {
     setAlertModal(prev => ({ ...prev, isOpen: false }));
   }, []);
 
-  // Handle Gmail OAuth callback
+  // Handle Gmail and Xero OAuth callbacks
   useEffect(() => {
     const handleGmailCallback = async () => {
       const gmailSuccess = searchParams.get('gmail_success');
@@ -241,6 +241,37 @@ function SettingsPageContent() {
           showAlert(`Failed to save Gmail connection: ${error.message}`, 'error');
           router.replace('/settings');
         }
+      }
+      
+      // Handle Xero callback
+      const xeroSuccess = searchParams.get('xero_success');
+      const xeroTenant = searchParams.get('tenant');
+      const xeroError = searchParams.get('xero_error');
+
+      if (xeroError) {
+        showAlert(`Xero connection failed: ${xeroError}`, 'error');
+        router.replace('/settings');
+        setActiveTab('integrations');
+        return;
+      }
+
+      if (xeroSuccess) {
+        const message = xeroTenant 
+          ? `Xero connected successfully! Organization: ${xeroTenant}`
+          : 'Xero connected successfully!';
+        showAlert(message, 'success');
+        
+        // Update integrations status
+        const updated = integrations.map(int =>
+          int.id === 'xero'
+            ? { ...int, status: 'connected' as const, config: { tenant: xeroTenant } }
+            : int
+        );
+        setIntegrations(updated);
+        localStorage.setItem('integrations', JSON.stringify(updated));
+        
+        router.replace('/settings');
+        setActiveTab('integrations');
       }
     };
 
@@ -326,6 +357,12 @@ function SettingsPageContent() {
   }, [router]);
 
   const handleConnectIntegration = (integration: Integration) => {
+    // For Xero, use OAuth flow instead of manual credentials
+    if (integration.id === 'xero') {
+      handleConnectXero();
+      return;
+    }
+    
     setSelectedIntegration(integration);
     setConfigForm({
       apiKey: integration.config?.apiKey || '',
@@ -336,7 +373,73 @@ function SettingsPageContent() {
     setShowConfigModal(true);
   };
 
+  const handleConnectXero = async () => {
+    setSaving(true);
+    try {
+      // Call backend to get Xero authorization URL
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/xero/authorize`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to initiate Xero authorization');
+      }
+      
+      const data = await response.json();
+      
+      // Redirect to Xero authorization page
+      window.location.href = data.authorization_url;
+      
+    } catch (error: any) {
+      showAlert(`Failed to connect to Xero: ${error.message}`, 'error');
+      setSaving(false);
+    }
+  };
+
+  const handleDisconnectXero = async () => {
+    if (!confirm('Are you sure you want to disconnect Xero?')) return;
+    
+    setSaving(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/xero/disconnect`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to disconnect Xero');
+      }
+      
+      const updated = integrations.map(int =>
+        int.id === 'xero'
+          ? { ...int, status: 'disconnected' as const, config: undefined }
+          : int
+      );
+      setIntegrations(updated);
+      localStorage.setItem('integrations', JSON.stringify(updated));
+      
+      showAlert('Xero disconnected successfully', 'success');
+    } catch (error: any) {
+      showAlert(`Error disconnecting Xero: ${error.message}`, 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleDisconnectIntegration = (integrationId: string) => {
+    // For Xero, use OAuth disconnect
+    if (integrationId === 'xero') {
+      handleDisconnectXero();
+      return;
+    }
+    
     const updated = integrations.map(int =>
       int.id === integrationId
         ? { ...int, status: 'disconnected' as const, apiKey: undefined, config: undefined }

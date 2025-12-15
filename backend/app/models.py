@@ -149,3 +149,32 @@ class FieldCorrection(Base):
     user = relationship("User")
     invoice = relationship("Invoice")
 
+
+class ERPIntegration(Base):
+    """Store ERP integration configurations and OAuth tokens"""
+    __tablename__ = "erp_integrations"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    provider = Column(String, nullable=False)  # xero, quickbooks, sap, etc.
+    is_active = Column(Boolean, default=False)
+    
+    # OAuth 2.0 tokens
+    access_token = Column(Text, nullable=True)
+    refresh_token = Column(Text, nullable=True)
+    token_expiry = Column(DateTime, nullable=True)
+    
+    # Provider-specific configuration
+    tenant_id = Column(String, nullable=True)  # Xero tenant_id / QB realm_id
+    org_id = Column(String, nullable=True)  # Organization/Company ID
+    config_data = Column(JSONB, nullable=True)  # Additional provider-specific data
+    
+    # Sync settings
+    auto_sync = Column(Boolean, default=False)
+    last_sync = Column(DateTime, nullable=True)
+    sync_count = Column(Integer, default=0)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    user = relationship("User")

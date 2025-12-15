@@ -7,20 +7,44 @@ This document explains how to configure and use ERP integrations in Invoice AI.
 ### 1. Xero
 **API Documentation:** https://developer.xero.com/documentation/api/accounting/overview
 
-**Setup Steps:**
-1. Log in to your Xero account
-2. Go to Settings → Developer → My Apps
-3. Click "New App"
-4. Choose "OAuth 2.0" integration
-5. Copy your Client ID (API Key) and Client Secret (API Secret)
-6. Add redirect URI: `http://localhost:3000/settings`
+**⚠️ IMPORTANT: Xero now uses OAuth 2.0 - Manual API keys are not supported**
 
-**Required Credentials:**
-- API Key: Your OAuth Client ID
-- API Secret: Your OAuth Client Secret
-- Organization ID: (Optional) Your Xero tenant ID
+**Setup Steps:**
+1. Go to [Xero Developer Portal](https://developer.xero.com)
+2. Click **My Apps** → **New App**
+3. Choose **Web app** integration type
+4. Fill in your application details:
+   - **App Name**: InvoiceAI
+   - **Company/Application URL**: Your frontend URL (e.g., `https://invoiceocr.sambeconsulting.com`)
+   - **OAuth 2.0 redirect URI**: `YOUR_FRONTEND_URL/settings`
+     - Production: `https://invoiceocr.sambeconsulting.com/settings`
+     - Local: `http://localhost:3000/settings`
+5. Click **Create app** and save your **Client ID** and **Client Secret**
+
+**Backend Configuration (.env file):**
+```env
+XERO_CLIENT_ID=your_client_id_here
+XERO_CLIENT_SECRET=your_client_secret_here
+XERO_REDIRECT_URI=https://invoiceocr.sambeconsulting.com/settings
+FRONTEND_URL=https://invoiceocr.sambeconsulting.com
+```
+
+**How to Connect:**
+1. In Invoice AI, go to Settings → Integrations
+2. Click **Connect** on Xero
+3. You'll be redirected to Xero to authorize access
+4. Select your organization and click **Allow access**
+5. You'll be redirected back with a success message
+
+**Required Scopes:**
+- `offline_access` - For refresh tokens
+- `accounting.transactions` - Create and manage bills
+- `accounting.contacts.read` - Read supplier information
+- `accounting.settings.read` - Read organization settings
 
 **API Endpoint:** `https://api.xero.com/api.xro/2.0`
+
+**See detailed setup guide:** [XERO_OAUTH_SETUP.md](./XERO_OAUTH_SETUP.md)
 
 ---
 

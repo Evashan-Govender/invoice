@@ -26,29 +26,115 @@ class XeroConnector(ERPConnector):
     
     def test_connection(self) -> bool:
         try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Accept": "application/json"
+            }
+            # Add tenant ID header if available
+            if self.org_id:
+                headers["Xero-tenant-id"] = self.org_id
+            
             response = requests.get(
                 f"{self.BASE_URL}/Organisation",
-                headers={
-                    "Authorization": f"Bearer {self.api_key}",
-                    "Accept": "application/json"
-                },
+                headers=headers,
                 timeout=10
             )
-            return response.status_code == 200
+            
+            if response.status_code == 200:
+                print("✅ Xero connection successful")
+                return True
+            else:
+                print(f"❌ Xero connection failed: {response.status_code}")
+                return False
         except Exception as e:
-            print(f"Xero connection test failed: {e}")
+            print(f"❌ Xero connection test failed: {e}")
+            return False
+    
+    def check_supplier_exists(self, vendor_name: str) -> bool:
+        """
+        Check if a supplier/contact exists in Xero
+        This method queries the Xero Contacts API to verify the supplier exists
+        """
+        try:
+            from urllib.parse import quote
+            
+            # URL encode the vendor name for the where clause
+            where_clause = quote(f'Name=="{vendor_name}"')
+            
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Accept": "application/json"
+            }
+            if self.org_id:
+                headers["Xero-tenant-id"] = self.org_id
+            
+            response = requests.get(
+                f"{self.BASE_URL}/Contacts?where={where_clause}",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                contacts = data.get("Contacts", [])
+                exists = len(contacts) > 0
+                
+                if exists:
+                    print(f"✅ Supplier '{vendor_name}' found in Xero")
+                else:
+                    print(f"❌ Supplier '{vendor_name}' not found in Xero")
+                
+                return exists
+            else:
+                print(f"⚠️ Error checking supplier: HTTP {response.status_code}")
+                return False
+                
+        except Exception as e:
+            print(f"⚠️ Error checking supplier existence: {str(e)}")
             return False
     
     def sync_invoice(self, invoice_data: Dict) -> Dict:
         try:
+            vendor_name = invoice_data.get("vendor_name", "").strip()
+            invoice_number = invoice_data.get("invoice_number", "")
+            
+            # Validation: Vendor name is required
+            if not vendor_name:
+                return {
+                    "success": False,
+                    "message": "Vendor/Supplier name is required",
+                    "error": "Cannot sync invoice without a vendor name. Please add the vendor name to the invoice."
+                }
+            
+            if not invoice_number:
+                return {
+                    "success": False,
+                    "message": "Invoice number is required",
+                    "error": "Cannot sync invoice without an invoice number"
+                }
+            
+            # CRITICAL: Check if supplier exists in Xero before proceeding
+            print(f"🔍 Checking if supplier '{vendor_name}' exists in Xero...")
+            supplier_exists = self.check_supplier_exists(vendor_name)
+            
+            if not supplier_exists:
+                return {
+                    "success": False,
+                    "message": f"Supplier '{vendor_name}' not found in Xero",
+                    "error": f"The supplier '{vendor_name}' does not exist in your Xero organization. Please create this supplier in Xero first, then try syncing again."
+                }
+            
+            print(f"✅ Supplier '{vendor_name}' verified in Xero. Proceeding with sync...")
+            
+            # Build Xero invoice payload
             xero_invoice = {
-                "Type": "ACCPAY",  # Accounts Payable
+                "Type": "ACCPAY",  # Accounts Payable (Bill)
                 "Contact": {
-                    "Name": invoice_data.get("vendor_name", "")
+                    "Name": vendor_name
                 },
                 "Date": invoice_data.get("date", ""),
                 "DueDate": invoice_data.get("date", ""),
-                "InvoiceNumber": invoice_data.get("invoice_number", ""),
+                "InvoiceNumber": invoice_number,
                 "Reference": invoice_data.get("invoice_number", ""),
                 "LineItems": [
                     {
@@ -65,31 +151,72 @@ class XeroConnector(ERPConnector):
                 "CurrencyCode": invoice_data.get("currency", "USD")
             }
             
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+            # Add tenant ID header if available
+            if self.org_id:
+                headers["Xero-tenant-id"] = self.org_id
+            
             response = requests.post(
                 f"{self.BASE_URL}/Invoices",
-                headers={
-                    "Authorization": f"Bearer {self.api_key}",
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
+                headers=headers,
                 json={"Invoices": [xero_invoice]},
                 timeout=30
             )
             
             if response.status_code in [200, 201]:
                 data = response.json()
-                return {
-                    "success": True,
-                    "message": "Invoice synced to Xero successfully",
-                    "external_id": data.get("Invoices", [{}])[0].get("InvoiceID")
-                }
+                invoices = data.get("Invoices", [])
+                
+                if invoices:
+                    xero_invoice_id = invoices[0].get("InvoiceID")
+                    xero_invoice_number = invoices[0].get("InvoiceNumber")
+                    print(f"✅ Invoice '{invoice_number}' synced to Xero: {xero_invoice_id}")
+                    
+                    return {
+                        "success": True,
+                        "message": f"Invoice '{invoice_number}' successfully synced to Xero as draft bill for supplier '{vendor_name}'",
+                        "external_id": xero_invoice_id,
+                        "external_number": xero_invoice_number
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "message": "Xero returned empty response",
+                        "error": "No invoice data returned from Xero"
+                    }
             else:
+                error_text = response.text
+                print(f"❌ Xero sync failed: {response.status_code} - {error_text}")
+                
+                # Try to parse error details
+                try:
+                    error_data = response.json()
+                    if "Elements" in error_data and error_data["Elements"]:
+                        validation_errors = error_data["Elements"][0].get("ValidationErrors", [])
+                        if validation_errors:
+                            error_messages = [err.get("Message", "") for err in validation_errors]
+                            error_text = "; ".join(error_messages)
+                except:
+                    pass
+                
                 return {
                     "success": False,
-                    "message": "Failed to sync to Xero",
-                    "error": response.text
+                    "message": f"Failed to sync to Xero (HTTP {response.status_code})",
+                    "error": error_text
                 }
+        except requests.RequestException as e:
+            print(f"❌ Network error syncing to Xero: {e}")
+            return {
+                "success": False,
+                "message": "Network error connecting to Xero",
+                "error": f"Unable to connect to Xero API: {str(e)}"
+            }
         except Exception as e:
+            print(f"❌ Error syncing to Xero: {e}")
             return {
                 "success": False,
                 "message": "Error syncing to Xero",

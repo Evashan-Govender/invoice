@@ -5,6 +5,7 @@ from .database import engine, Base
 from .routers import auth_router, invoices_router
 from .routers.integrations import router as integrations_router
 from .routers.settings import router as settings_router
+from .routers.xero_oauth import router as xero_oauth_router
 from .services.background_tasks import start_background_tasks, stop_background_tasks
 from .migrations import run_migrations
 import os
@@ -61,6 +62,7 @@ app.include_router(auth_router)
 app.include_router(invoices_router)
 app.include_router(integrations_router)
 app.include_router(settings_router)
+app.include_router(xero_oauth_router)
 
 @app.get("/")
 def root():
