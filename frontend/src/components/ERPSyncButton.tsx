@@ -64,17 +64,51 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
   const handleSyncToConnector = async (connectorId: string) => {
     setSyncing(connectorId);
     try {
-      const result = await connectorManager.syncInvoice(
-        connectorId as ConnectorType,
-        invoiceData
-      );
+      // Use backend API instead of frontend connectors
+      // Backend has the OAuth tokens from database
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations/sync`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          provider: connectorId,
+          config: {
+            // Backend will use stored OAuth tokens from database
+            // No need to pass credentials here
+          },
+          invoice_data: {
+            invoice_number: invoiceData.invoice_number,
+            vendor_name: invoiceData.vendor_name,
+            date: invoiceData.date,
+            due_date: invoiceData.due_date,
+            total: invoiceData.total_amount,
+            subtotal: invoiceData.subtotal,
+            tax_amount: invoiceData.tax_amount,
+            currency: invoiceData.currency || 'USD',
+            line_items: invoiceData.line_items || [],
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || errorData.message || `HTTP ${response.status}: Failed to sync`);
+      }
+
+      const result = await response.json();
 
       const newResults = new Map(syncResults);
       newResults.set(connectorId, result);
       setSyncResults(newResults);
     } catch (error: any) {
       const newResults = new Map(syncResults);
-      newResults.set(connectorId, { success: false, error: error.message });
+      newResults.set(connectorId, { 
+        success: false, 
+        message: 'Sync failed',
+        error: error.message 
+      });
       setSyncResults(newResults);
     } finally {
       setSyncing(null);
