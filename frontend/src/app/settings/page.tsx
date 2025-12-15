@@ -414,8 +414,11 @@ function SettingsPageContent() {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to disconnect Xero');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `HTTP ${response.status}: Failed to disconnect Xero`);
       }
+      
+      const result = await response.json();
       
       const updated = integrations.map(int =>
         int.id === 'xero'
@@ -425,8 +428,9 @@ function SettingsPageContent() {
       setIntegrations(updated);
       localStorage.setItem('integrations', JSON.stringify(updated));
       
-      showAlert('Xero disconnected successfully', 'success');
+      showAlert(result.message || 'Xero disconnected successfully', 'success');
     } catch (error: any) {
+      console.error('Disconnect error:', error);
       showAlert(`Error disconnecting Xero: ${error.message}`, 'error');
     } finally {
       setSaving(false);

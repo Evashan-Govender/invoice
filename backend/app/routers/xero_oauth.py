@@ -315,39 +315,55 @@ def disconnect_xero(
     db: Session = Depends(get_db)
 ):
     """Disconnect Xero integration (clears tokens but keeps credentials)"""
-    integration = db.query(ERPIntegration).filter(
-        ERPIntegration.user_id == current_user.id,
-        ERPIntegration.provider == "xero"
-    ).first()
-    
-    if not integration:
+    try:
+        integration = db.query(ERPIntegration).filter(
+            ERPIntegration.user_id == current_user.id,
+            ERPIntegration.provider == "xero"
+        ).first()
+        
+        if not integration:
+            # No integration found - return success (already disconnected)
+            return {
+                "message": "Xero not connected",
+                "success": True
+            }
+        
+        # Revoke tokens at Xero (optional but recommended)
+        if integration.access_token and integration.client_id and integration.client_secret:
+            try:
+                revoke_response = requests.post(
+                    "https://identity.xero.com/connect/revocation",
+                    data={"token": integration.access_token},
+                    auth=(integration.client_id, integration.client_secret),
+                    timeout=10
+                )
+                print(f"Token revocation response: {revoke_response.status_code}")
+            except Exception as e:
+                print(f"Token revocation failed (continuing anyway): {e}")
+                # Continue even if revocation fails
+        
+        # Clear tokens but keep credentials for re-connection
+        integration.access_token = None
+        integration.refresh_token = None
+        integration.token_expiry = None
+        integration.tenant_id = None
+        integration.is_active = False
+        integration.config_data = None
+        
+        db.commit()
+        
+        return {
+            "message": "Xero disconnected successfully",
+            "success": True
+        }
+        
+    except Exception as e:
+        print(f"Error disconnecting Xero: {e}")
+        db.rollback()
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Xero integration not found"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to disconnect Xero: {str(e)}"
         )
-    
-    # Revoke tokens at Xero (optional but recommended)
-    if integration.access_token and integration.client_id and integration.client_secret:
-        try:
-            requests.post(
-                "https://identity.xero.com/connect/revocation",
-                data={"token": integration.access_token},
-                auth=(integration.client_id, integration.client_secret)
-            )
-        except:
-            pass  # Continue even if revocation fails
-    
-    # Clear tokens but keep credentials for re-connection
-    integration.access_token = None
-    integration.refresh_token = None
-    integration.token_expiry = None
-    integration.tenant_id = None
-    integration.is_active = False
-    integration.config_data = None
-    
-    db.commit()
-    
-    return {"message": "Xero disconnected successfully", "success": True}
 
 
 @router.get("/status")
