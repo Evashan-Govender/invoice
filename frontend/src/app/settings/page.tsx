@@ -144,11 +144,17 @@ function SettingsPageContent() {
   const [integrations, setIntegrations] = useState<Integration[]>(integrationData);
   const [selectedIntegration, setSelectedIntegration] = useState<Integration | null>(null);
   const [showConfigModal, setShowConfigModal] = useState(false);
+  const [showXeroConfigModal, setShowXeroConfigModal] = useState(false);
   const [configForm, setConfigForm] = useState({
     apiKey: '',
     apiSecret: '',
     orgId: '',
     autoSync: false,
+  });
+  const [xeroConfigForm, setXeroConfigForm] = useState({
+    client_id: '',
+    client_secret: '',
+    redirect_uri: '',
   });
 
   // SMTP/IMAP state
@@ -357,9 +363,9 @@ function SettingsPageContent() {
   }, [router]);
 
   const handleConnectIntegration = (integration: Integration) => {
-    // For Xero, use OAuth flow instead of manual credentials
+    // For Xero, show configuration modal first
     if (integration.id === 'xero') {
-      handleConnectXero();
+      handleShowXeroConfig();
       return;
     }
     
@@ -371,6 +377,73 @@ function SettingsPageContent() {
       autoSync: integration.config?.autoSync || false,
     });
     setShowConfigModal(true);
+  };
+
+  const handleShowXeroConfig = () => {
+    setShowXeroConfigModal(true);
+    // Optionally load existing config
+    loadXeroConfig();
+  };
+
+  const loadXeroConfig = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/xero/config`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.configured) {
+          setXeroConfigForm({
+            client_id: data.client_id || '',
+            client_secret: '', // Never return the secret
+            redirect_uri: data.redirect_uri || '',
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error loading Xero config:', error);
+    }
+  };
+
+  const handleSaveXeroConfig = async () => {
+    if (!xeroConfigForm.client_id || !xeroConfigForm.client_secret) {
+      showAlert('Please enter both Client ID and Client Secret', 'warning');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/xero/config`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(xeroConfigForm),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Failed to save Xero configuration');
+      }
+
+      const result = await response.json();
+      showAlert('Xero configuration saved! Now you can connect to Xero.', 'success');
+      setShowXeroConfigModal(false);
+      
+      // Now proceed to OAuth
+      setTimeout(() => {
+        handleConnectXero();
+      }, 1000);
+      
+    } catch (error: any) {
+      showAlert(`Error saving configuration: ${error.message}`, 'error');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleConnectXero = async () => {
@@ -1867,6 +1940,111 @@ function SettingsPageContent() {
         message={alertModal.message}
         type={alertModal.type}
       />
+
+      {/* Xero Configuration Modal */}
+      {showXeroConfigModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-fade-in">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Configure Xero</h3>
+                  <p className="text-xs text-slate-500">Enter your OAuth credentials</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowXeroConfigModal(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Client ID <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={xeroConfigForm.client_id}
+                  onChange={(e) => setXeroConfigForm({ ...xeroConfigForm, client_id: e.target.value })}
+                  placeholder="Enter Xero Client ID"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Client Secret <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  value={xeroConfigForm.client_secret}
+                  onChange={(e) => setXeroConfigForm({ ...xeroConfigForm, client_secret: e.target.value })}
+                  placeholder="Enter Xero Client Secret"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Redirect URI <span className="text-slate-400 text-xs">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={xeroConfigForm.redirect_uri}
+                  onChange={(e) => setXeroConfigForm({ ...xeroConfigForm, redirect_uri: e.target.value })}
+                  placeholder={typeof window !== 'undefined' ? `${window.location.origin}/settings` : ''}
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                />
+                <p className="text-xs text-slate-500 mt-1">Leave empty to use default</p>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start space-x-2">
+                  <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="text-xs text-blue-800">
+                    <p className="font-semibold mb-1">How to get these credentials:</p>
+                    <ol className="list-decimal list-inside space-y-1 text-blue-700">
+                      <li>Go to <a href="https://developer.xero.com" target="_blank" rel="noopener noreferrer" className="underline">developer.xero.com</a></li>
+                      <li>Create a new app or use existing</li>
+                      <li>Copy Client ID and Client Secret</li>
+                      <li>Add redirect URI to your Xero app</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex space-x-3 mt-6">
+              <button
+                onClick={() => setShowXeroConfigModal(false)}
+                className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveXeroConfig}
+                disabled={saving || !xeroConfigForm.client_id || !xeroConfigForm.client_secret}
+                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-medium shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              >
+                {saving ? 'Saving...' : 'Save & Connect'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
