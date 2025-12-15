@@ -46,6 +46,11 @@ def run_migrations(engine: Engine):
         ("invoice_data", "detected_language", "VARCHAR(50)"),
         ("invoice_data", "is_duplicate", "BOOLEAN DEFAULT FALSE"),
         ("invoice_data", "duplicate_of_id", "INTEGER REFERENCES invoices(id)"),
+        
+        # ERP Integration OAuth credentials (added for database-based config)
+        ("erp_integrations", "client_id", "VARCHAR(255)"),
+        ("erp_integrations", "client_secret", "TEXT"),
+        ("erp_integrations", "redirect_uri", "VARCHAR(500)"),
     ]
     
     # Define new tables
