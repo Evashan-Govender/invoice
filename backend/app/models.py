@@ -159,6 +159,11 @@ class ERPIntegration(Base):
     provider = Column(String, nullable=False)  # xero, quickbooks, sap, etc.
     is_active = Column(Boolean, default=False)
     
+    # OAuth 2.0 App Credentials (stored per user for multi-tenant support)
+    client_id = Column(String, nullable=True)  # OAuth Client ID
+    client_secret = Column(Text, nullable=True)  # OAuth Client Secret (encrypted)
+    redirect_uri = Column(String, nullable=True)  # OAuth Redirect URI
+    
     # OAuth 2.0 tokens
     access_token = Column(Text, nullable=True)
     refresh_token = Column(Text, nullable=True)

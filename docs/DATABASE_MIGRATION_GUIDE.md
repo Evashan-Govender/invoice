@@ -2,19 +2,22 @@
 
 ## Overview
 
-There are **3 ways** to run the ERP integrations migration in Python:
+The ERP integrations migration runs **automatically** when you start the backend server. No manual intervention needed!
 
-## ✅ Method 1: Automatic on Startup (Recommended)
+## ✅ How Migrations Work (Automatic)
 
-The migration now runs **automatically** when you start the backend server!
+### What Happens on Backend Startup:
 
-### How it works:
-- The `backend/app/main.py` calls `run_migrations()` on startup
-- It checks if the `erp_integrations` table exists
-- If not, it creates the table automatically
-- **No manual intervention needed!**
+1. Backend starts via `start.bat` or `start.sh`
+2. `app/main.py` calls `run_migrations()` automatically
+3. System checks if tables/columns exist
+4. Creates missing tables (including `erp_integrations`)
+5. Adds missing columns
+6. Creates indexes
+7. **Done!**
 
-### To use:
+### To Run Migrations:
+
 ```bash
 cd backend
 
@@ -25,62 +28,24 @@ start.bat
 ./start.sh
 ```
 
-The migration will run automatically and you'll see:
+You'll see output like:
 ```
 📊 Running column migrations...
+✓ Added column smtp_enabled to user_settings
 📦 Creating new tables...
 ✓ Created table erp_integrations
 🔍 Creating indexes...
+✓ Index idx_erp_integrations_user_id ready
 ✅ Migrations complete!
+
+🌐 Starting FastAPI server on http://localhost:8000
 ```
 
 ---
 
-## Method 2: Using the Migration Runner Script
+## Method 2: Using Python Code Directly
 
-If you want to run migrations manually or separately:
-
-### Step 1: Use the migration runner
-
-```bash
-cd backend
-
-# Activate virtual environment first
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
-
-# Run the ERP integrations migration
-python run_migration.py
-
-# Or run a specific migration file:
-python run_migration.py --file migrations/add_erp_integrations.sql
-
-# Or run all migrations:
-python run_migration.py --all
-```
-
-### Output:
-```
-🔗 Connecting to database...
-📁 Migration file: migrations/add_erp_integrations.sql
-📄 SQL file loaded (1234 characters)
-🚀 Executing migration...
-   Executing statement 1/5...
-   Executing statement 2/5...
-   Executing statement 3/5...
-   Executing statement 4/5...
-   Executing statement 5/5...
-✅ Migration completed successfully!
-📊 Executed 5 SQL statements
-```
-
----
-
-## Method 3: Using Python Code Directly
-
-If you want to integrate migration into your own script:
+If you want to run migrations from your own Python script:
 
 ```python
 from sqlalchemy import create_engine
@@ -101,22 +66,29 @@ run_migrations(engine)
 print("✅ Migrations completed!")
 ```
 
+Save this as `run_manual_migration.py` and run:
+```bash
+cd backend
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+python run_manual_migration.py
+```
+
 ---
 
-## Method 4: Using psql Command Line (Non-Python)
+## Method 3: Using psql Command Line
 
-If you prefer command-line SQL:
+If you prefer SQL command line:
 
 ```bash
 cd backend
 
-# Set DATABASE_URL environment variable
-$env:DATABASE_URL="postgresql://postgres:avinash@localhost:5433/invoiceai"  # Windows PowerShell
-# or
-export DATABASE_URL="postgresql://postgres:avinash@localhost:5433/invoiceai"  # Linux/Mac
-
-# Run the migration
+# Linux/Mac
+export DATABASE_URL="postgresql://postgres:avinash@localhost:5433/invoiceai"
 psql $DATABASE_URL -f migrations/add_erp_integrations.sql
+
+# Windows PowerShell
+$env:DATABASE_URL="postgresql://postgres:avinash@localhost:5433/invoiceai"
+psql $env:DATABASE_URL -f migrations/add_erp_integrations.sql
 ```
 
 ---
@@ -164,6 +136,31 @@ SELECT COUNT(*) FROM erp_integrations;
 
 ## Troubleshooting
 
+### Issue: Need to activate virtual environment
+
+If you see "ModuleNotFoundError: No module named 'sqlalchemy'":
+
+**Solution**: Just start the backend normally (migrations run automatically):
+
+```bash
+cd backend
+
+# Windows
+start.bat
+
+# Linux/Mac  
+./start.sh
+```
+
+The `start.bat`/`start.sh` scripts handle:
+- ✅ Activating virtual environment
+- ✅ Running migrations automatically
+- ✅ Starting the server
+
+**No need to activate venv manually or run migrations separately!**
+
+---
+
 ### Error: "DATABASE_URL not found"
 
 **Solution**: Make sure `.env` file exists with DATABASE_URL:
@@ -175,23 +172,6 @@ type .env  # Windows
 
 # Should contain:
 DATABASE_URL=postgresql://postgres:avinash@localhost:5433/invoiceai
-```
-
-### Error: "Module not found: sqlalchemy"
-
-**Solution**: Activate virtual environment:
-
-```bash
-cd backend
-
-# Windows
-venv\Scripts\activate
-
-# Linux/Mac  
-source venv/bin/activate
-
-# Verify
-python -c "import sqlalchemy; print('✅ SQLAlchemy installed')"
 ```
 
 ### Error: "Table already exists"
@@ -237,14 +217,25 @@ When you run the migration, it creates:
 
 ## Summary
 
-**Recommended approach:**
-1. ✅ Just start the backend with `start.bat` or `start.sh`
-2. ✅ Migration runs automatically
-3. ✅ Check logs to confirm success
+**✅ Recommended approach (Easiest):**
+1. Just start the backend with `start.bat` or `./start.sh`
+2. Migrations run automatically
+3. Check logs to confirm success
+4. **That's it!**
 
-**Alternative:**
-- Use `python run_migration.py` if you need manual control
-- Use `psql` if you prefer SQL command line
+**Alternative approaches:**
+- Use Python code with `from app.migrations import run_migrations`
+- Use `psql` command line if you prefer SQL directly
 
-That's it! The migration will create everything needed for Xero OAuth integration. 🎉
+**Files you need:**
+- ✅ `backend/start.bat` or `backend/start.sh` - Starts backend with auto-migrations
+- ✅ `backend/app/migrations.py` - Contains migration logic
+- ✅ `backend/migrations/*.sql` - SQL migration files (optional, for reference)
+
+**Files removed (no longer needed):**
+- ❌ `setup_xero.bat` / `setup_xero.sh` - Removed
+- ❌ `run_migration.bat` / `run_migration.sh` - Removed  
+- ❌ `run_migration.py` - Removed
+
+Everything happens automatically now! 🎉
 

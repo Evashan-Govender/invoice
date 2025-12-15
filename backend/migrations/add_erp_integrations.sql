@@ -7,6 +7,11 @@ CREATE TABLE IF NOT EXISTS erp_integrations (
     provider VARCHAR(50) NOT NULL,
     is_active BOOLEAN DEFAULT FALSE,
     
+    -- OAuth 2.0 App Credentials (per user for multi-tenant)
+    client_id VARCHAR(255),
+    client_secret TEXT,
+    redirect_uri VARCHAR(500),
+    
     -- OAuth 2.0 tokens
     access_token TEXT,
     refresh_token TEXT,
