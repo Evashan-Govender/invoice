@@ -82,10 +82,9 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
             invoice_number: invoiceData.invoice_number,
             vendor_name: invoiceData.vendor_name,
             date: invoiceData.date,
-            due_date: invoiceData.due_date,
             total: invoiceData.total_amount,
             subtotal: invoiceData.subtotal,
-            tax_amount: invoiceData.tax_amount,
+            tax: invoiceData.tax,
             currency: invoiceData.currency || 'USD',
             line_items: invoiceData.line_items || [],
           }
