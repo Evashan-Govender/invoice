@@ -80,6 +80,26 @@ def run_migrations(engine: Engine):
                 vendor_name VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
+        """,
+        "erp_integrations": """
+            CREATE TABLE IF NOT EXISTS erp_integrations (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                provider VARCHAR(50) NOT NULL,
+                is_active BOOLEAN DEFAULT FALSE,
+                access_token TEXT,
+                refresh_token TEXT,
+                token_expiry TIMESTAMP,
+                tenant_id VARCHAR(255),
+                org_id VARCHAR(255),
+                config_data JSONB,
+                auto_sync BOOLEAN DEFAULT FALSE,
+                last_sync TIMESTAMP,
+                sync_count INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_id, provider)
+            )
         """
     }
     
@@ -123,6 +143,9 @@ def run_migrations(engine: Engine):
             ("idx_vendors_normalized_name", "CREATE INDEX IF NOT EXISTS idx_vendors_normalized_name ON vendors(normalized_name)"),
             ("idx_field_corrections_user_id", "CREATE INDEX IF NOT EXISTS idx_field_corrections_user_id ON field_corrections(user_id)"),
             ("idx_field_corrections_field_name", "CREATE INDEX IF NOT EXISTS idx_field_corrections_field_name ON field_corrections(field_name)"),
+            ("idx_erp_integrations_user_id", "CREATE INDEX IF NOT EXISTS idx_erp_integrations_user_id ON erp_integrations(user_id)"),
+            ("idx_erp_integrations_provider", "CREATE INDEX IF NOT EXISTS idx_erp_integrations_provider ON erp_integrations(provider)"),
+            ("idx_erp_integrations_user_provider", "CREATE INDEX IF NOT EXISTS idx_erp_integrations_user_provider ON erp_integrations(user_id, provider)"),
         ]
         
         for idx_name, idx_sql in indexes:
