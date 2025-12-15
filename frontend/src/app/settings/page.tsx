@@ -406,6 +406,13 @@ function SettingsPageContent() {
   };
 
   const handleShowXeroConfig = () => {
+    // Pre-fill redirect_uri with current domain
+    if (!xeroConfigForm.redirect_uri && typeof window !== 'undefined') {
+      setXeroConfigForm(prev => ({
+        ...prev,
+        redirect_uri: `${window.location.origin}/settings`
+      }));
+    }
     setShowXeroConfigModal(true);
     // Optionally load existing config
     loadXeroConfig();

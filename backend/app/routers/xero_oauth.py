@@ -292,8 +292,14 @@ def xero_callback(
         db.commit()
         
         # Redirect back to frontend settings page
+        # Use the redirect_uri from config, or fall back to FRONTEND_URL
+        frontend_url = FRONTEND_URL
+        if integration.redirect_uri:
+            # Extract base URL from redirect_uri (remove /settings)
+            frontend_url = integration.redirect_uri.replace('/settings', '')
+        
         return RedirectResponse(
-            url=f"{FRONTEND_URL}/settings?xero_success=true&tenant={tenant_name}",
+            url=f"{frontend_url}/settings?xero_success=true&tenant={tenant_name}",
             status_code=302
         )
         
