@@ -205,14 +205,71 @@ function SettingsPageContent() {
 
   // Handle Gmail and Xero OAuth callbacks
   useEffect(() => {
-    const handleGmailCallback = async () => {
+    const handleCallbacks = async () => {
+      // Handle Xero OAuth callback with authorization code
+      const xeroCode = searchParams.get('code');
+      const xeroState = searchParams.get('state');
+      const xeroScope = searchParams.get('scope');
+      
+      if (xeroCode && xeroScope && xeroScope.includes('accounting.transactions')) {
+        // This is a Xero callback - forward to backend
+        try {
+          showAlert('Connecting to Xero...', 'info');
+          
+          // Backend will handle the code exchange and token storage
+          const backendCallbackUrl = `${process.env.NEXT_PUBLIC_API_URL}/xero/callback?code=${xeroCode}&state=${xeroState || ''}`;
+          
+          // Redirect to backend callback (it will redirect back with success/error)
+          window.location.href = backendCallbackUrl;
+          return; // Don't process other callbacks while redirecting
+          
+        } catch (error: any) {
+          showAlert(`Error connecting to Xero: ${error.message}`, 'error');
+          router.replace('/settings');
+          setActiveTab('integrations');
+          return;
+        }
+      }
+      
+      // Handle Xero success/error from backend redirect
+      const xeroSuccess = searchParams.get('xero_success');
+      const xeroTenant = searchParams.get('tenant');
+      const xeroError = searchParams.get('xero_error');
+
+      if (xeroError) {
+        showAlert(`Xero connection failed: ${xeroError}`, 'error');
+        router.replace('/settings');
+        setActiveTab('integrations');
+        return;
+      }
+
+      if (xeroSuccess) {
+        const message = xeroTenant 
+          ? `Xero connected successfully! Organization: ${xeroTenant}`
+          : 'Xero connected successfully!';
+        showAlert(message, 'success');
+        
+        // Update integrations status
+        const updated = integrations.map(int =>
+          int.id === 'xero'
+            ? { ...int, status: 'connected' as const, config: { tenant: xeroTenant } }
+            : int
+        );
+        setIntegrations(updated);
+        localStorage.setItem('integrations', JSON.stringify(updated));
+        
+        router.replace('/settings');
+        setActiveTab('integrations');
+        return;
+      }
+      
+      // Handle Gmail callback
       const gmailSuccess = searchParams.get('gmail_success');
       const gmailData = searchParams.get('gmail_data');
       const gmailError = searchParams.get('gmail_error');
 
       if (gmailError) {
         showAlert(`Gmail connection failed: ${gmailError}`, 'error');
-        // Clear URL params
         router.replace('/settings');
         setActiveTab('gmail');
         return;
@@ -248,40 +305,9 @@ function SettingsPageContent() {
           router.replace('/settings');
         }
       }
-      
-      // Handle Xero callback
-      const xeroSuccess = searchParams.get('xero_success');
-      const xeroTenant = searchParams.get('tenant');
-      const xeroError = searchParams.get('xero_error');
-
-      if (xeroError) {
-        showAlert(`Xero connection failed: ${xeroError}`, 'error');
-        router.replace('/settings');
-        setActiveTab('integrations');
-        return;
-      }
-
-      if (xeroSuccess) {
-        const message = xeroTenant 
-          ? `Xero connected successfully! Organization: ${xeroTenant}`
-          : 'Xero connected successfully!';
-        showAlert(message, 'success');
-        
-        // Update integrations status
-        const updated = integrations.map(int =>
-          int.id === 'xero'
-            ? { ...int, status: 'connected' as const, config: { tenant: xeroTenant } }
-            : int
-        );
-        setIntegrations(updated);
-        localStorage.setItem('integrations', JSON.stringify(updated));
-        
-        router.replace('/settings');
-        setActiveTab('integrations');
-      }
     };
 
-    handleGmailCallback();
+    handleCallbacks();
   }, [searchParams, router]);
 
   useEffect(() => {
