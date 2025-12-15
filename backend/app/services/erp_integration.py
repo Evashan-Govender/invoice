@@ -176,11 +176,15 @@ class XeroConnector(ERPConnector):
                     xero_invoice_number = invoices[0].get("InvoiceNumber")
                     print(f"✅ Invoice '{invoice_number}' synced to Xero: {xero_invoice_id}")
                     
+                    # Generate direct link to view bill in Xero
+                    xero_bill_url = f"https://go.xero.com/AccountsPayable/View.aspx?InvoiceID={xero_invoice_id}"
+                    
                     return {
                         "success": True,
                         "message": f"Invoice '{invoice_number}' successfully synced to Xero as draft bill for supplier '{vendor_name}'",
                         "external_id": xero_invoice_id,
-                        "external_number": xero_invoice_number
+                        "external_number": xero_invoice_number,
+                        "external_url": xero_bill_url
                     }
                 else:
                     return {

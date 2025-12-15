@@ -280,6 +280,41 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
                     </div>
                   </button>
                   
+                  {/* Success Message with View in ERP Link */}
+                  {result?.success && result?.external_url && (
+                    <div className="mx-4 mb-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-2">
+                          <svg className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div className="flex-1 text-left">
+                            <p className="text-xs font-semibold text-emerald-900 mb-1">
+                              {result.message || 'Successfully synced'}
+                            </p>
+                            {result.external_id && (
+                              <p className="text-xs text-emerald-700">
+                                ID: {result.external_id.substring(0, 8)}...
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <a
+                          href={result.external_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center space-x-1 text-xs font-semibold text-emerald-700 hover:text-emerald-900 transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span>View</span>
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Detailed Error Message */}
                   {(result?.error || (!result?.success && result?.message)) && (
                     <div className="mx-4 mb-2 p-3 bg-red-50 border border-red-200 rounded-lg">
