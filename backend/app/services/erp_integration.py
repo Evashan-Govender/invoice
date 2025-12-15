@@ -211,7 +211,7 @@ class XeroConnector(ERPConnector):
         except requests.RequestException as e:
             print(f"❌ Network error syncing to Xero: {e}")
             return {
-                "success": False,
+                "success": False, 
                 "message": "Network error connecting to Xero",
                 "error": f"Unable to connect to Xero API: {str(e)}"
             }
