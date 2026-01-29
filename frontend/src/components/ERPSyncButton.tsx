@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { connectorManager, ConnectorType, InvoiceData } from '@/lib/connectors';
 import { getERPLogo } from './ERPIcons';
+import AlertModal from './AlertModal';
 
 interface ERPSyncButtonProps {
   invoiceData: InvoiceData;
@@ -29,6 +30,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
   const [syncing, setSyncing] = useState<string | null>(null);
   const [activeConnectors, setActiveConnectors] = useState<ConnectorInfo[]>([]);
   const [syncResults, setSyncResults] = useState<Map<string, any>>(new Map());
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   useEffect(() => {
     const loadConnectors = () => {
@@ -126,27 +128,29 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
     }
   };
 
-  // No connected ERPs - show setup button
+  // No connected ERPs - show sync button that displays error modal
   if (activeConnectors.length === 0) {
     return (
-      <button
-        onClick={() => {
-          // Get invoice ID from URL if available
-          const invoiceId = window.location.pathname.match(/\/invoices\/(\d+)/)?.[1];
-          if (invoiceId) {
-            sessionStorage.setItem('fromSettings', 'true');
-            router.push(`/settings?from=invoice&invoiceId=${invoiceId}`);
-          } else {
-            router.push('/settings');
-          }
-        }}
-        className="btn-secondary group"
-      >
-        <svg className="w-4 h-4 mr-2 text-slate-400 group-hover:text-violet-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-        <span className="group-hover:text-violet-600 transition-colors">Connect ERP</span>
-      </button>
+      <>
+        <button
+          onClick={() => setShowErrorModal(true)}
+          className="btn-primary"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+          </svg>
+          <span>Sync to ERP</span>
+        </button>
+
+        <AlertModal
+          isOpen={showErrorModal}
+          onClose={() => setShowErrorModal(false)}
+          type="error"
+          title="No ERP Connected"
+          message="You need to connect to an ERP system before you can sync invoices. Please go to Settings to configure your ERP integration."
+          confirmText="Close"
+        />
+      </>
     );
   }
 

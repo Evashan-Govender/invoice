@@ -64,6 +64,8 @@ def sync_invoice_to_erp(
     """Sync a single invoice to an ERP system"""
     try:
         from ..models import ERPIntegration
+        import requests
+        from datetime import timedelta
         
         # Get ERP integration from database for this user
         integration = db.query(ERPIntegration).filter(
@@ -83,6 +85,51 @@ def sync_invoice_to_erp(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"{request.provider} OAuth token not found. Please reconnect in Settings."
             )
+        
+        # Check if token is expired or about to expire (within 5 minutes)
+        if integration.token_expiry and integration.token_expiry < datetime.utcnow() + timedelta(minutes=5):
+            print(f"🔄 Token expired or expiring soon for {request.provider}, refreshing...")
+            
+            # Refresh token for Xero
+            if request.provider.lower() == "xero" and integration.refresh_token:
+                try:
+                    XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
+                    token_data = {
+                        "grant_type": "refresh_token",
+                        "refresh_token": integration.refresh_token,
+                    }
+                    
+                    response = requests.post(
+                        XERO_TOKEN_URL,
+                        data=token_data,
+                        auth=(integration.client_id, integration.client_secret),
+                        headers={"Content-Type": "application/x-www-form-urlencoded"}
+                    )
+                    
+                    if response.ok:
+                        tokens = response.json()
+                        integration.access_token = tokens.get("access_token")
+                        integration.refresh_token = tokens.get("refresh_token", integration.refresh_token)
+                        integration.token_expiry = datetime.utcnow() + timedelta(seconds=tokens.get("expires_in", 1800))
+                        db.commit()
+                        print(f"✅ Token refreshed successfully for {request.provider}")
+                    else:
+                        print(f"❌ Failed to refresh token: {response.text}")
+                        raise HTTPException(
+                            status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=f"{request.provider} token expired and refresh failed. Please reconnect in Settings."
+                        )
+                except Exception as e:
+                    print(f"❌ Error refreshing token: {str(e)}")
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail=f"{request.provider} token expired and refresh failed. Please reconnect in Settings."
+                    )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=f"{request.provider} token expired. Please reconnect in Settings."
+                )
         
         # Build config with OAuth tokens from database
         config = {
