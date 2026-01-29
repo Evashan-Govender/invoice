@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'invoiceai-frontend-dev',
       script: 'npm',
-      args: 'run dev:80',
+      args: 'run dev',
       cwd: process.cwd(),
       instances: 1,
       exec_mode: 'fork',
@@ -15,7 +15,7 @@ module.exports = {
       restart_delay: 4000,
       env: {
         NODE_ENV: 'development',
-        PORT: 80,
+        PORT: 3000,
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
       },
       error_file: './logs/pm2-error.log',
@@ -27,7 +27,7 @@ module.exports = {
     {
       name: 'invoiceai-frontend-prod',
       script: 'npm',
-      args: 'run start:80',
+      args: 'run start',
       cwd: process.cwd(),
       instances: 1,
       exec_mode: 'fork',
@@ -39,7 +39,7 @@ module.exports = {
       restart_delay: 4000,
       env: {
         NODE_ENV: 'production',
-        PORT: 80,
+        PORT: 3000,
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
       },
       error_file: './logs/pm2-error.log',

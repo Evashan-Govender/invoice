@@ -12,14 +12,14 @@ import { getCoordinatesForField } from '@/lib/fieldCoordinates';
 import { availableFormats, transformInvoice, downloadTransformedInvoice } from '@/lib/invoiceTransform';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function InvoiceDetailPage({ params }: PageProps) {
   const router = useRouter();
-  const invoiceId = parseInt(params.id);
+  const [invoiceId, setInvoiceId] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -55,7 +55,16 @@ export default function InvoiceDetailPage({ params }: PageProps) {
     setHighlightRegion(coordinates);
   };
 
+  // Unwrap params promise (Next.js 15 requirement)
   useEffect(() => {
+    params.then((resolvedParams) => {
+      setInvoiceId(parseInt(resolvedParams.id));
+    });
+  }, [params]);
+
+  useEffect(() => {
+    if (!invoiceId) return;
+    
     const loadInvoice = async () => {
       try {
         const data = await api.getInvoice(invoiceId);
@@ -106,6 +115,8 @@ export default function InvoiceDetailPage({ params }: PageProps) {
   };
 
   const handleSave = async () => {
+    if (!invoiceId) return;
+    
     setSaving(true);
     setSaveSuccess(false);
     setError('');
@@ -234,6 +245,17 @@ export default function InvoiceDetailPage({ params }: PageProps) {
           <button onClick={handleBack} className="btn-primary">
             Back to Dashboard
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!invoiceId) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100">
+        <div className="text-center">
+          <div className="spinner w-12 h-12 border-4 border-violet-600 mx-auto"></div>
+          <p className="mt-4 text-slate-600 font-medium">Loading invoice...</p>
         </div>
       </div>
     );
