@@ -193,3 +193,41 @@ def sync_multiple_invoices(
             detail=f"Error syncing invoices: {str(e)}"
         )
 
+
+@router.get("/status")
+def get_integrations_status(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all ERP integrations status for the current user"""
+    try:
+        from ..models import ERPIntegration
+        
+        integrations = db.query(ERPIntegration).filter(
+            ERPIntegration.user_id == current_user.id
+        ).all()
+        
+        # Build response with integration status
+        result = []
+        for integration in integrations:
+            result.append({
+                "id": integration.provider,
+                "provider": integration.provider,
+                "status": "connected" if integration.is_active else "disconnected",
+                "is_active": integration.is_active,
+                "tenant_id": integration.tenant_id,
+                "org_id": integration.org_id,
+                "auto_sync": integration.auto_sync,
+                "last_sync": integration.last_sync.isoformat() if integration.last_sync else None,
+                "sync_count": integration.sync_count,
+                "created_at": integration.created_at.isoformat() if integration.created_at else None,
+            })
+        
+        return {"integrations": result}
+    except Exception as e:
+        print(f"Error getting integrations status: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error getting integrations status: {str(e)}"
+        )
+

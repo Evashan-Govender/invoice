@@ -369,13 +369,44 @@ function SettingsPageContent() {
           console.log('Settings not available yet');
         }
         
-        const savedIntegrations = localStorage.getItem('integrations');
-        if (savedIntegrations) {
-          const saved = JSON.parse(savedIntegrations);
-          setIntegrations(integrationData.map(int => {
-            const savedInt = saved.find((s: any) => s.id === int.id);
-            return savedInt ? { ...int, ...savedInt } : int;
-          }));
+        // Load integrations status from backend
+        try {
+          const integrationsData = await api.getIntegrationsStatus();
+          if (integrationsData && integrationsData.integrations) {
+            const backendIntegrations = integrationsData.integrations;
+            
+            // Merge backend status with frontend integration data
+            const updated = integrationData.map(int => {
+              const backendInt = backendIntegrations.find((b: any) => b.provider === int.id);
+              if (backendInt && backendInt.is_active) {
+                return {
+                  ...int,
+                  status: 'connected' as const,
+                  config: {
+                    tenant: backendInt.tenant_id,
+                    orgId: backendInt.org_id,
+                    autoSync: backendInt.auto_sync,
+                  }
+                };
+              }
+              return int;
+            });
+            setIntegrations(updated);
+            
+            // Also save to localStorage for offline access (but backend is source of truth)
+            localStorage.setItem('integrations', JSON.stringify(updated));
+          }
+        } catch (e) {
+          console.log('Could not load integrations from backend, trying localStorage');
+          // Fallback to localStorage if backend fails
+          const savedIntegrations = localStorage.getItem('integrations');
+          if (savedIntegrations) {
+            const saved = JSON.parse(savedIntegrations);
+            setIntegrations(integrationData.map(int => {
+              const savedInt = saved.find((s: any) => s.id === int.id);
+              return savedInt ? { ...int, ...savedInt } : int;
+            }));
+          }
         }
         
         connectorManager.loadFromStorage();

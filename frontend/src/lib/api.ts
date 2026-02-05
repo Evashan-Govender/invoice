@@ -285,6 +285,11 @@ class ApiClient {
     return response.data;
   }
 
+  async getIntegrationsStatus() {
+    const response = await this.client.get('/integrations/status');
+    return response.data;
+  }
+
   async syncInvoiceToERP(provider: string, config: any, invoiceData: any) {
     const response = await this.client.post('/integrations/sync', {
       provider,

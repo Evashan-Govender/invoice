@@ -33,19 +33,64 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
   const [showErrorModal, setShowErrorModal] = useState(false);
 
   useEffect(() => {
-    const loadConnectors = () => {
+    const loadConnectors = async () => {
       try {
-        const stored = localStorage.getItem('integrations');
-        if (stored) {
-          const integrations = JSON.parse(stored);
-          const connected = integrations
-            .filter((int: any) => int.status === 'connected')
-            .map((int: any) => ({ id: int.id, name: connectorNames[int.id] || int.id }));
+        // First try to load from backend API
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/integrations/status`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          const connected = data.integrations
+            .filter((int: any) => int.is_active)
+            .map((int: any) => ({ 
+              id: int.provider, 
+              name: connectorNames[int.provider] || int.provider 
+            }));
           setActiveConnectors(connected);
-          connectorManager.loadFromStorage();
+          
+          // Also update localStorage for offline access
+          const integrationsForStorage = data.integrations.map((int: any) => ({
+            id: int.provider,
+            status: int.is_active ? 'connected' : 'disconnected',
+            config: {
+              tenant: int.tenant_id,
+              orgId: int.org_id,
+              autoSync: int.auto_sync,
+            }
+          }));
+          localStorage.setItem('integrations', JSON.stringify(integrationsForStorage));
+        } else {
+          // Fallback to localStorage if API fails
+          const stored = localStorage.getItem('integrations');
+          if (stored) {
+            const integrations = JSON.parse(stored);
+            const connected = integrations
+              .filter((int: any) => int.status === 'connected')
+              .map((int: any) => ({ id: int.id, name: connectorNames[int.id] || int.id }));
+            setActiveConnectors(connected);
+          }
         }
+        
+        connectorManager.loadFromStorage();
       } catch (error) {
         console.error('Failed to load connectors:', error);
+        // Fallback to localStorage on error
+        try {
+          const stored = localStorage.getItem('integrations');
+          if (stored) {
+            const integrations = JSON.parse(stored);
+            const connected = integrations
+              .filter((int: any) => int.status === 'connected')
+              .map((int: any) => ({ id: int.id, name: connectorNames[int.id] || int.id }));
+            setActiveConnectors(connected);
+          }
+        } catch (e) {
+          console.error('Failed to load from localStorage:', e);
+        }
       }
     };
     
