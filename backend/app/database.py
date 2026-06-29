@@ -6,9 +6,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:avinash@localhost:5433/invoiceai")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/invoiceai")
 
-engine = create_engine(DATABASE_URL)
+# Neon (and other hosted Postgres) requires SSL. Pass connect_args when sslmode is in the URL.
+connect_args = {}
+if "sslmode=require" in DATABASE_URL:
+    connect_args = {"sslmode": "require"}
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

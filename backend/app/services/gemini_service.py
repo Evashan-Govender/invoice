@@ -11,6 +11,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Poppler path for Windows - set POPPLER_PATH in .env if poppler is not in system PATH
+# e.g. POPPLER_PATH=C:\poppler\Library\bin
+POPPLER_PATH = os.getenv("POPPLER_PATH") or None
+
 # Expense categories for smart categorization
 EXPENSE_CATEGORIES = [
     "Utilities",
@@ -175,7 +179,10 @@ class GeminiService:
         """
         try:
             # Convert PDF to images
-            images = convert_from_path(pdf_path, dpi=200, first_page=1, last_page=max_pages)
+            images = convert_from_path(
+                pdf_path, dpi=200, first_page=1, last_page=max_pages,
+                poppler_path=POPPLER_PATH
+            )
             return images
         except Exception as e:
             raise Exception(f"Error converting PDF to images: {str(e)}")

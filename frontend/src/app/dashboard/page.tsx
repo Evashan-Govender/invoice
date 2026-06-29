@@ -1019,7 +1019,7 @@ export default function DashboardPage() {
                               {file.name}
                             </p>
                             <p className="text-xs text-slate-500">
-                              {(file.size / 1024 / 1024).toFixed(2)} MB • {isImageFile(file.name) ? 'Image' : 'PDF'}
+                              {file.size >= 1024 * 1024 ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : `${(file.size / 1024).toFixed(1)} KB`} • {isImageFile(file.name) ? 'Image' : 'PDF'}
                             </p>
                           </div>
                         </div>
