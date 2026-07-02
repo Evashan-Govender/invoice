@@ -106,7 +106,7 @@ export default function PDFViewerWithHighlight({
   };
 
   return (
-    <div className="h-full flex flex-col bg-slate-100">
+    <div className="h-full flex flex-col bg-sb-grey-2-10">
       {/* Active Field Indicator */}
       {activeField && (
         <div className="bg-amber-50 border-b-2 border-amber-400 px-4 py-2 flex-shrink-0">
@@ -122,22 +122,22 @@ export default function PDFViewerWithHighlight({
 
       {/* PDF Controls */}
       {!loading && !error && numPages > 0 && (
-        <div className="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+        <div className="bg-white border-b border-sb-grey-2-20 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center space-x-3">
             <button
               onClick={() => changePage(-1)}
               disabled={pageNumber <= 1}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
+              className="px-3 py-1.5 bg-sb-grey-2-10 hover:bg-sb-grey-2-20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
             >
               ← Previous
             </button>
-            <span className="text-sm text-slate-600 font-medium">
-              Page <span className="text-slate-900">{pageNumber}</span> of <span className="text-slate-900">{numPages}</span>
+            <span className="text-sm text-sb-grey-2 font-medium">
+              Page <span className="text-sb-grey-1">{pageNumber}</span> of <span className="text-sb-grey-1">{numPages}</span>
             </span>
             <button
               onClick={() => changePage(1)}
               disabled={pageNumber >= numPages}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
+              className="px-3 py-1.5 bg-sb-grey-2-10 hover:bg-sb-grey-2-20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
             >
               Next →
             </button>
@@ -146,7 +146,7 @@ export default function PDFViewerWithHighlight({
             href={pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center"
+            className="text-sm text-sb-blue hover:text-sb-dark-blue font-medium flex items-center"
           >
             Open in New Tab
             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,16 +162,16 @@ export default function PDFViewerWithHighlight({
         className="flex-1 overflow-auto p-4 relative"
       >
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-sb-grey-2-10">
             <div className="text-center">
-              <div className="spinner w-12 h-12 border-4 border-violet-600 mx-auto"></div>
-              <p className="mt-4 text-slate-600 font-medium">Loading PDF...</p>
+              <div className="spinner w-12 h-12 border-4 border-sb-blue mx-auto"></div>
+              <p className="mt-4 text-sb-grey-2 font-medium">Loading PDF...</p>
             </div>
           </div>
         )}
 
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-sb-grey-2-10">
             <div className="text-center">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

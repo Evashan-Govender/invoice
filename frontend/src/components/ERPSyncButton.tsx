@@ -244,7 +244,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
         {/* Active integrations indicator */}
         <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center">
           <span className="absolute inline-flex h-full w-full rounded-full bg-white/30 animate-ping"></span>
-          <span className="relative inline-flex rounded-full h-5 w-5 bg-white text-[10px] font-bold text-violet-600 items-center justify-center shadow">
+          <span className="relative inline-flex rounded-full h-5 w-5 bg-white text-[10px] font-bold text-sb-blue items-center justify-center shadow">
             {activeConnectors.length}
           </span>
         </span>
@@ -254,20 +254,20 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
       {showSyncMenu && (
         <div className="absolute right-0 mt-3 w-80 card shadow-2xl z-50 overflow-hidden animate-dropdown-enter">
           {/* Header */}
-          <div className="px-4 py-3 bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+          <div className="px-4 py-3 bg-gradient-to-r from-sb-grey-2-10 to-sb-grey-2-20 border-b border-sb-grey-2-20">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <div className="p-1.5 bg-violet-100 rounded-lg">
-                  <svg className="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-1.5 bg-sb-blue-10 rounded-lg">
+                  <svg className="w-4 h-4 text-sb-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                   </svg>
                 </div>
-                <span className="text-sm font-bold text-slate-700">Sync Invoice</span>
+                <span className="text-sm font-bold text-sb-grey-2">Sync Invoice</span>
               </div>
               {hasResults && (
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                   successCount === activeConnectors.length
-                    ? 'bg-emerald-100 text-emerald-700'
+                    ? 'bg-sb-green-10 text-sb-green'
                     : 'bg-amber-100 text-amber-700'
                 }`}>
                   {successCount}/{activeConnectors.length} synced
@@ -287,13 +287,13 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
                   <button
                     onClick={() => handleSyncToConnector(connector.id)}
                     disabled={syncing !== null}
-                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-violet-50 transition-colors disabled:opacity-60"
+                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-sb-blue-5 transition-colors disabled:opacity-60"
                   >
                     <div className="flex items-center space-x-3">
                       {getERPLogo(connector.id, 'w-9 h-9')}
                       <div className="text-left max-w-[200px]">
-                        <p className="text-sm font-semibold text-slate-800">{connector.name}</p>
-                        <p className="text-xs text-slate-500 line-clamp-2">
+                        <p className="text-sm font-semibold text-sb-grey-1">{connector.name}</p>
+                        <p className="text-xs text-sb-grey-2 line-clamp-2">
                           {result?.success 
                             ? result.message || 'Synced successfully'
                             : result?.error || result?.message
@@ -306,7 +306,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
                     
                     <div className="flex items-center">
                       {isLoading ? (
-                        <div className="spinner w-5 h-5 border-2 border-violet-600"></div>
+                        <div className="spinner w-5 h-5 border-2 border-sb-blue"></div>
                       ) : result?.success ? (
                         <div className="badge-success flex items-center space-x-1">
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -322,7 +322,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
                           <span>Failed</span>
                         </div>
                       ) : (
-                        <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-sb-grey-2-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       )}
@@ -331,18 +331,18 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
                   
                   {/* Success Message with View in ERP Link */}
                   {result?.success && result?.external_url && (
-                    <div className="mx-4 mb-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                    <div className="mx-4 mb-2 p-3 bg-sb-green-5 border border-sb-light-green rounded-lg">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-2">
-                          <svg className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-sb-green mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                           <div className="flex-1 text-left">
-                            <p className="text-xs font-semibold text-emerald-900 mb-1">
+                            <p className="text-xs font-semibold text-sb-dark-green mb-1">
                               {result.message || 'Successfully synced'}
                             </p>
                             {result.external_id && (
-                              <p className="text-xs text-emerald-700">
+                              <p className="text-xs text-sb-green">
                                 ID: {result.external_id.substring(0, 8)}...
                               </p>
                             )}
@@ -352,7 +352,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
                           href={result.external_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center space-x-1 text-xs font-semibold text-emerald-700 hover:text-emerald-900 transition-colors"
+                          className="flex items-center space-x-1 text-xs font-semibold text-sb-green hover:text-sb-dark-green transition-colors"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <span>View</span>
@@ -391,7 +391,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
 
           {/* Sync All Button */}
           {activeConnectors.length > 1 && (
-            <div className="px-3 py-3 bg-slate-50 border-t border-slate-200">
+            <div className="px-3 py-3 bg-sb-grey-2-10 border-t border-sb-grey-2-20">
               <button
                 onClick={handleSyncToAll}
                 disabled={syncing !== null}
@@ -415,7 +415,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
           )}
 
           {/* Footer */}
-          <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100">
+          <div className="px-4 py-2.5 bg-sb-grey-2-10 border-t border-sb-grey-2-10">
             <button
               onClick={() => {
                 const invoiceId = window.location.pathname.match(/\/invoices\/(\d+)/)?.[1];
@@ -426,7 +426,7 @@ export default function ERPSyncButton({ invoiceData }: ERPSyncButtonProps) {
                   router.push('/settings');
                 }
               }}
-              className="w-full flex items-center justify-center space-x-1 text-xs text-slate-500 hover:text-violet-600 transition-colors font-medium"
+              className="w-full flex items-center justify-center space-x-1 text-xs text-sb-grey-2 hover:text-sb-blue transition-colors font-medium"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />

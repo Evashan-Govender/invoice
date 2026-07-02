@@ -47,30 +47,30 @@ export default function ImageViewer({ imageUrl, filename }: ImageViewerProps) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-slate-100">
+    <div className="h-full flex flex-col bg-sb-grey-2-10">
       {/* Controls */}
-      <div className="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+      <div className="bg-white border-b border-sb-grey-2-20 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center space-x-3">
           <button
             onClick={handleZoomOut}
             disabled={zoom <= 0.5}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
+            className="px-3 py-1.5 bg-sb-grey-2-10 hover:bg-sb-grey-2-20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
           >
             Zoom Out
           </button>
-          <span className="text-sm text-slate-600 font-medium">
+          <span className="text-sm text-sb-grey-2 font-medium">
             {Math.round(zoom * 100)}%
           </span>
           <button
             onClick={handleZoomIn}
             disabled={zoom >= 3}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
+            className="px-3 py-1.5 bg-sb-grey-2-10 hover:bg-sb-grey-2-20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors"
           >
             Zoom In
           </button>
           <button
             onClick={handleResetZoom}
-            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-medium transition-colors"
+            className="px-3 py-1.5 bg-sb-grey-2-10 hover:bg-sb-grey-2-20 rounded-lg text-sm font-medium transition-colors"
           >
             Reset
           </button>
@@ -79,7 +79,7 @@ export default function ImageViewer({ imageUrl, filename }: ImageViewerProps) {
           href={imageUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center"
+          className="text-sm text-sb-blue hover:text-sb-dark-blue font-medium flex items-center"
         >
           Open in New Tab
           <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

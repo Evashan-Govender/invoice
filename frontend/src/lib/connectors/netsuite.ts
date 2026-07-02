@@ -52,7 +52,7 @@ export class NetSuiteConnector extends BaseConnector {
       this.logInfo(`Syncing invoice ${invoiceData.invoice_number}...`);
 
       // Build memo from all available info
-      const memoLines: string[] = [`Imported from AFA ZeroTouch AP™ - ${invoiceData.vendor_name}`];
+      const memoLines: string[] = [`Imported from Sambe ZeroTouch AP™ - ${invoiceData.vendor_name}`];
       if (invoiceData.metadata) memoLines.push(`Metadata: ${invoiceData.metadata}`);
       if (invoiceData.extra_information) memoLines.push(`Notes: ${invoiceData.extra_information}`);
       
