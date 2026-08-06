@@ -73,28 +73,30 @@ async def upload_invoices(
     
     # Validate file types
     for file in files:
-        if not invoice_service.is_supported_file(file.filename):
+        filename = invoice_service.get_safe_filename(file.filename)
+        if not invoice_service.is_supported_file(filename):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"File {file.filename} is not supported. Supported formats: PDF, JPG, JPEG, PNG, GIF, WEBP, BMP, TIFF"
+                detail=f"File {filename} is not supported. Supported formats: PDF, JPG, JPEG, PNG, GIF, WEBP, BMP, TIFF"
             )
     
     # Save files and create records
     invoices = []
     for file in files:
         try:
+            filename = invoice_service.get_safe_filename(file.filename)
             # Save file
             file_path = invoice_service.save_uploaded_file(file, current_user.id)
             
             # Create invoice record
             invoice = invoice_service.create_invoice_record(
-                db, current_user, file.filename, file_path
+                db, current_user, filename, file_path
             )
             invoices.append(invoice)
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error uploading {file.filename}: {str(e)}"
+                detail=f"Error uploading {filename}: {str(e)}"
             )
     
     return invoices

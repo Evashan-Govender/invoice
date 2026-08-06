@@ -25,6 +25,13 @@ class InvoiceService:
         """Check if file type is supported"""
         ext = os.path.splitext(filename.lower())[1]
         return ext in SUPPORTED_EXTENSIONS
+
+    def get_safe_filename(self, filename: str) -> str:
+        """Return the final filename component without any directory path."""
+        safe_filename = filename.replace("\\", "/").rsplit("/", 1)[-1]
+        if not safe_filename or safe_filename in {".", ".."}:
+            raise ValueError("Invalid filename")
+        return safe_filename
     
     def is_image_file(self, filename: str) -> bool:
         """Check if file is an image"""
@@ -63,7 +70,7 @@ class InvoiceService:
         # Generate unique filename
         import time
         timestamp = int(time.time() * 1000)
-        filename = f"{timestamp}_{file.filename}"
+        filename = f"{timestamp}_{self.get_safe_filename(file.filename)}"
         file_path = os.path.join(user_dir, filename)
         
         # Save file

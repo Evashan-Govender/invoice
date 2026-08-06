@@ -175,7 +175,13 @@ class GeminiService:
         """
         try:
             # Convert PDF to images
-            images = convert_from_path(pdf_path, dpi=200, first_page=1, last_page=max_pages)
+            images = convert_from_path(
+                pdf_path,
+                dpi=200,
+                first_page=1,
+                last_page=max_pages,
+                poppler_path=os.getenv("POPPLER_PATH") or None,
+            )
             return images
         except Exception as e:
             raise Exception(f"Error converting PDF to images: {str(e)}")
