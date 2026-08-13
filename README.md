@@ -166,6 +166,7 @@ Edit `backend/.env`:
 DATABASE_URL=postgresql://postgres:avinash@localhost:5433/invoiceai
 JWT_SECRET_KEY=your-secret-key-here-generate-a-secure-random-string
 GEMINI_API_KEY=your-gemini-api-key-here
+POWER_AUTOMATE_INTEGRATION_KEY=generate-a-long-random-secret-for-your-flow
 ```
 
 **Generate a secure JWT secret:**

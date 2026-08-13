@@ -1,5 +1,6 @@
 import os
 import shutil
+import uuid
 from typing import List, Optional, Dict, Tuple
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
@@ -73,17 +74,24 @@ class InvoiceService:
         import time
         safe_name = os.path.basename(file.filename.replace("\\", "/"))
         timestamp = int(time.time() * 1000)
-<<<<<<< HEAD
-        filename = f"{timestamp}_{self.get_safe_filename(file.filename)}"
-=======
-        filename = f"{timestamp}_{safe_name}"
->>>>>>> 37b73d54c8112b5b834fe525c12cfa169484ac69
+        filename = f"{timestamp}_{uuid.uuid4().hex}_{self.get_safe_filename(safe_name)}"
         file_path = os.path.join(user_dir, filename)
         
         # Save file
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
+        return file_path
+
+    def save_file_content(self, filename: str, content: bytes, user_id: int) -> str:
+        """Save already-decoded integration content in the target user's directory."""
+        safe_name = self.get_safe_filename(filename)
+        user_dir = os.path.join(UPLOAD_DIR, str(user_id))
+        os.makedirs(user_dir, exist_ok=True)
+        stored_name = f"{uuid.uuid4().hex}_{safe_name}"
+        file_path = os.path.join(user_dir, stored_name)
+        with open(file_path, "wb") as buffer:
+            buffer.write(content)
         return file_path
     
     def create_invoice_record(

@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from pydantic import BaseModel, EmailStr
 from ..database import get_db
 from ..models import User
-from ..auth import create_access_token, get_password_hash, verify_password, get_current_user
+from ..auth import create_access_token, get_password_hash, verify_password, get_current_user, get_power_automate_client
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -69,12 +70,26 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     
     # Create access token (sub must be a string)
     access_token = create_access_token(data={"sub": str(user.id)})
-    print(f"Created token for user {user.id} ({user.email}): {access_token[:20]}...")
-    
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserResponse)
 def get_current_user_info(current_user: User = Depends(get_current_user)):
     """Get current user information"""
     return current_user
+
+
+@router.get("/verify-user")
+def verify_user_for_integration(
+    email: EmailStr,
+    _: None = Depends(get_power_automate_client),
+    db: Session = Depends(get_db),
+):
+    """Check whether an email is registered before OneDrive ingestion.
+
+    This endpoint is available only to the configured Power Automate client.
+    It intentionally does not expose a user directory, user IDs, or tokens.
+    """
+    normalized_email = str(email).strip().lower()
+    user = db.query(User).filter(func.lower(User.email) == normalized_email).first()
+    return {"exists": user is not None, "email": normalized_email}
 

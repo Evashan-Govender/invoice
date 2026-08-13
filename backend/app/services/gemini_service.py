@@ -180,16 +180,11 @@ class GeminiService:
         try:
             # Convert PDF to images
             images = convert_from_path(
-<<<<<<< HEAD
                 pdf_path,
                 dpi=200,
                 first_page=1,
                 last_page=max_pages,
                 poppler_path=os.getenv("POPPLER_PATH") or None,
-=======
-                pdf_path, dpi=200, first_page=1, last_page=max_pages,
-                poppler_path=POPPLER_PATH
->>>>>>> 37b73d54c8112b5b834fe525c12cfa169484ac69
             )
             return images
         except Exception as e:

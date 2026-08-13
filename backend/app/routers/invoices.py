@@ -1,12 +1,16 @@
 from typing import List, Optional
+import base64
+import binascii
+import os
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from sqlalchemy import func
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from ..database import get_db
 from ..models import User, Invoice, InvoiceData
-from ..auth import get_current_user, decode_token
+from ..auth import get_current_user, decode_token, get_power_automate_client
 from ..services.invoice_service import InvoiceService
 
 router = APIRouter(prefix="/invoices", tags=["invoices"])
@@ -51,6 +55,52 @@ class InvoiceDetailResponse(BaseModel):
 
 class AmendDataRequest(BaseModel):
     amended_data: dict
+
+
+class PowerAutomateInvoiceRequest(BaseModel):
+    filename: str
+    file_content: str
+    user_email: EmailStr
+
+
+MAX_INTEGRATION_FILE_BYTES = 25 * 1024 * 1024
+
+
+@router.post("/webhook/json", status_code=status.HTTP_201_CREATED)
+def ingest_power_automate_invoice(
+    request: PowerAutomateInvoiceRequest,
+    _: None = Depends(get_power_automate_client),
+    db: Session = Depends(get_db),
+):
+    """Ingest a OneDrive file for a verified user via Power Automate."""
+    filename = invoice_service.get_safe_filename(request.filename)
+    if not invoice_service.is_supported_file(filename):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported invoice file type")
+
+    encoded_content = request.file_content.split(",", 1)[-1] if request.file_content.startswith("data:") else request.file_content
+    try:
+        content = base64.b64decode(encoded_content, validate=True)
+    except (binascii.Error, ValueError):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="file_content must be valid Base64")
+    if not content:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invoice file is empty")
+    if len(content) > MAX_INTEGRATION_FILE_BYTES:
+        raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="Invoice file exceeds 25 MB")
+
+    user_email = str(request.user_email).strip().lower()
+    user = db.query(User).filter(func.lower(User.email) == user_email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Target user is not registered")
+
+    file_path = invoice_service.save_file_content(filename, content, user.id)
+    try:
+        invoice = invoice_service.create_invoice_record(db, user, filename, file_path)
+    except Exception:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        raise
+
+    return {"id": invoice.id, "filename": invoice.filename, "status": invoice.status.value}
 
 @router.post("/upload", response_model=List[InvoiceResponse], status_code=status.HTTP_201_CREATED)
 async def upload_invoices(
