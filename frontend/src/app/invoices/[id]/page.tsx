@@ -223,9 +223,9 @@ export default function InvoiceDetailPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-primary-50/30 to-slate-100">
         <div className="text-center">
-          <div className="spinner w-12 h-12 border-4 border-violet-600 mx-auto"></div>
+          <div className="spinner w-12 h-12 border-4 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-slate-600 font-medium">Loading invoice...</p>
         </div>
       </div>
@@ -234,7 +234,7 @@ export default function InvoiceDetailPage({ params }: PageProps) {
 
   if (error && !invoice) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-primary-50/30 to-slate-100">
         <div className="card p-8 text-center max-w-md">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,9 +252,9 @@ export default function InvoiceDetailPage({ params }: PageProps) {
 
   if (!invoiceId) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-primary-50/30 to-slate-100">
         <div className="text-center">
-          <div className="spinner w-12 h-12 border-4 border-violet-600 mx-auto"></div>
+          <div className="spinner w-12 h-12 border-4 border-primary-600 mx-auto"></div>
           <p className="mt-4 text-slate-600 font-medium">Loading invoice...</p>
         </div>
       </div>
@@ -264,7 +264,7 @@ export default function InvoiceDetailPage({ params }: PageProps) {
   const pdfUrl = api.getInvoicePdfUrl(invoiceId);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50/30 to-slate-100">
       {/* Header */}
       <header className="header border-b border-slate-200 shadow-sm">
         <div className="max-w-full mx-auto px-6 py-4 flex justify-between items-center">
@@ -306,7 +306,7 @@ export default function InvoiceDetailPage({ params }: PageProps) {
                 )}
                 {/* Category Badge */}
                 {invoiceMetadata.category && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-violet-100 text-violet-700">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-primary-100 text-primary-700">
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                     </svg>
@@ -372,7 +372,7 @@ export default function InvoiceDetailPage({ params }: PageProps) {
             </button>
             <button
               onClick={handleTransform}
-              className="inline-flex items-center px-5 py-2.5 font-semibold text-white text-sm bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 rounded-xl shadow-lg shadow-purple-500/25 transition-all"
+              className="inline-flex items-center px-5 py-2.5 font-semibold text-white text-sm bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 rounded-xl shadow-lg shadow-accent-500/25 transition-all"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -447,10 +447,10 @@ export default function InvoiceDetailPage({ params }: PageProps) {
               <>
                 {/* AI Confidence Scores Panel */}
                 {invoiceMetadata.confidence_scores && Object.keys(invoiceMetadata.confidence_scores).length > 0 && (
-                  <div className="card p-4 bg-gradient-to-r from-slate-50 to-violet-50 border border-violet-100">
+                  <div className="card p-4 bg-gradient-to-r from-slate-50 to-primary-50 border border-primary-100">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
-                        <svg className="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
                         <span className="text-sm font-semibold text-slate-700">AI Extraction Confidence</span>
@@ -535,7 +535,7 @@ export default function InvoiceDetailPage({ params }: PageProps) {
                   </button>
                   <button
                     onClick={handleTransform}
-                    className="inline-flex items-center px-5 py-2.5 font-semibold text-white text-sm bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 rounded-xl shadow-lg shadow-purple-500/25 transition-all"
+                    className="inline-flex items-center px-5 py-2.5 font-semibold text-white text-sm bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 rounded-xl shadow-lg shadow-accent-500/25 transition-all"
                   >
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />

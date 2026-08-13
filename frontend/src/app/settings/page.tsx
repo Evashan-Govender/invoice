@@ -904,31 +904,31 @@ function SettingsPageContent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="spinner w-12 h-12 border-4 border-violet-600 mx-auto"></div>
-          <p className="mt-4 text-slate-600 font-medium">Loading settings...</p>
+          <div className="spinner w-12 h-12 border-4 border-sb-blue mx-auto"></div>
+          <p className="mt-4 text-sb-grey-2 font-medium">Loading settings...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="h-screen flex overflow-hidden">
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-brand">
           <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30 p-2">
+            <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-sb-light-blue-20/50 p-1.5 border border-sb-grey-2-10">
               <Image 
-                src="/AFA-Ranged-Logo-White.png" 
-                alt="AFA ZeroTouch AP" 
-                width={28} 
-                height={28}
+                src="/sambe-light-mode-logo.png" 
+                alt="Sambe Consulting" 
+                width={36} 
+                height={36}
                 className="object-contain"
               />
             </div>
             <div>
-              <h1 className="text-xl font-bold gradient-text">AFA ZeroTouch AP™</h1>
-              <p className="text-xs text-slate-400">Powered by Gemini</p>
+              <h1 className="text-xl font-bold gradient-text">ZeroTouch AP™</h1>
+              <p className="text-xs text-sb-grey-2-50">Powered by Gemini</p>
             </div>
           </div>
         </div>
@@ -955,14 +955,14 @@ function SettingsPageContent() {
 
         {/* Settings Submenu */}
         <div className="px-4 mt-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Settings Menu</p>
+          <p className="text-xs font-semibold text-sb-grey-2-50 uppercase tracking-wider mb-3">Settings Menu</p>
           <div className="space-y-1">
             <button
               onClick={() => setActiveTab('integrations')}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeTab === 'integrations' 
-                  ? 'bg-violet-100 text-violet-700 font-medium' 
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-sb-blue-10 text-sb-dark-blue font-medium' 
+                  : 'text-sb-grey-2 hover:bg-sb-grey-2-10'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -974,8 +974,8 @@ function SettingsPageContent() {
               onClick={() => setActiveTab('api')}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeTab === 'api' 
-                  ? 'bg-violet-100 text-violet-700 font-medium' 
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-sb-blue-10 text-sb-dark-blue font-medium' 
+                  : 'text-sb-grey-2 hover:bg-sb-grey-2-10'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -987,8 +987,8 @@ function SettingsPageContent() {
               onClick={() => setActiveTab('gmail')}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeTab === 'gmail' 
-                  ? 'bg-violet-100 text-violet-700 font-medium' 
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-sb-blue-10 text-sb-dark-blue font-medium' 
+                  : 'text-sb-grey-2 hover:bg-sb-grey-2-10'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1000,8 +1000,8 @@ function SettingsPageContent() {
               onClick={() => setActiveTab('smtp')}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeTab === 'smtp' 
-                  ? 'bg-violet-100 text-violet-700 font-medium' 
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-sb-blue-10 text-sb-dark-blue font-medium' 
+                  : 'text-sb-grey-2 hover:bg-sb-grey-2-10'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1013,8 +1013,8 @@ function SettingsPageContent() {
               onClick={() => setActiveTab('preferences')}
               className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeTab === 'preferences' 
-                  ? 'bg-violet-100 text-violet-700 font-medium' 
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-sb-blue-10 text-sb-dark-blue font-medium' 
+                  : 'text-sb-grey-2 hover:bg-sb-grey-2-10'
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1026,17 +1026,17 @@ function SettingsPageContent() {
         </div>
 
         <div className="sidebar-footer">
-          <div className="flex items-center space-x-3 px-3 py-3 bg-slate-50 rounded-xl mb-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-full flex items-center justify-center shadow-md">
+          <div className="flex items-center space-x-3 px-3 py-3 bg-sb-grey-2-10 rounded-xl mb-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-sb-blue to-sb-dark-blue rounded-full flex items-center justify-center shadow-md">
               <span className="text-white font-semibold text-sm">
                 {user?.email?.charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-800 truncate">
+              <p className="text-sm font-semibold text-sb-grey-1 truncate">
                 {user?.email?.split('@')[0]}
               </p>
-              <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+              <p className="text-xs text-sb-grey-2 truncate">{user?.email}</p>
             </div>
           </div>
           <button
@@ -1048,6 +1048,10 @@ function SettingsPageContent() {
             </svg>
             <span>Sign Out</span>
           </button>
+          {/* Sambe copyright — required on all materials per brand guidelines */}
+          <p className="sambe-copyright mt-3 px-1">
+            © {new Date().getFullYear()} Sambe Consulting (Pty) Ltd.
+          </p>
         </div>
       </aside>
 
@@ -1068,14 +1072,14 @@ function SettingsPageContent() {
                 </button>
               )}
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Settings</h2>
-                <p className="text-sm text-slate-500 mt-1">Manage your integrations and preferences</p>
+                <h2 className="text-2xl font-bold text-sb-dark-blue">Settings</h2>
+                <p className="text-sm text-sb-grey-2 mt-1">Manage your integrations and preferences</p>
               </div>
             </div>
             {connectedCount > 0 && (
-              <div className="flex items-center space-x-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-full">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-emerald-700">
+              <div className="flex items-center space-x-2 px-4 py-2 bg-sb-green-5 border border-sb-light-green rounded-full">
+                <div className="w-2 h-2 bg-sb-green rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-sb-green">
                   {connectedCount} Integration{connectedCount > 1 ? 's' : ''} Active
                 </span>
               </div>
@@ -1089,8 +1093,8 @@ function SettingsPageContent() {
             <div className="space-y-6 animate-fade-in">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">Accounting Software</h3>
-                  <p className="text-sm text-slate-500 mt-1">
+                  <h3 className="text-lg font-bold text-sb-grey-1">Accounting Software</h3>
+                  <p className="text-sm text-sb-grey-2 mt-1">
                     Connect your accounting platform to automatically sync extracted invoice data
                   </p>
                 </div>
@@ -1102,7 +1106,7 @@ function SettingsPageContent() {
                     key={integration.id}
                     className={`card-hover relative group ${
                       integration.status === 'connected'
-                        ? 'border-emerald-200 shadow-emerald-100'
+                        ? 'border-sb-light-green shadow-none'
                         : ''
                     }`}
                   >
@@ -1110,7 +1114,7 @@ function SettingsPageContent() {
                     {integration.status === 'connected' && (
                       <div className="absolute top-4 right-4">
                         <div className="badge-success flex items-center space-x-1.5">
-                          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+                          <div className="w-1.5 h-1.5 bg-sb-green rounded-full"></div>
                           <span>Connected</span>
                         </div>
                       </div>
@@ -1123,15 +1127,15 @@ function SettingsPageContent() {
                           {getERPLogo(integration.id, 'w-14 h-14')}
                         </div>
                         <div>
-                          <h4 className="text-lg font-bold text-slate-900">{integration.name}</h4>
-                          <p className="text-xs text-slate-400 uppercase tracking-wide">
+                          <h4 className="text-lg font-bold text-sb-grey-1">{integration.name}</h4>
+                          <p className="text-xs text-sb-grey-2-50 uppercase tracking-wide">
                             {integration.id === 'sap' ? 'Enterprise ERP' : 'Accounting'}
                           </p>
                         </div>
                       </div>
 
                       {/* Description */}
-                      <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                      <p className="text-sm text-sb-grey-2 leading-relaxed mb-4">
                         {integration.description}
                       </p>
 
@@ -1197,8 +1201,8 @@ function SettingsPageContent() {
           {activeTab === 'api' && (
             <div className="max-w-2xl animate-fade-in">
               <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-900">API Configuration</h3>
-                <p className="text-sm text-slate-500 mt-1">
+                <h3 className="text-lg font-bold text-sb-grey-1">API Configuration</h3>
+                <p className="text-sm text-sb-grey-2 mt-1">
                   Manage API keys for AI-powered invoice processing
                 </p>
               </div>
@@ -1207,17 +1211,17 @@ function SettingsPageContent() {
                 <div className="p-6 space-y-5">
                   {/* Current Key Status */}
                   {settings?.gemini_api_key_set && geminiKeyMasked && (
-                    <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <div className="p-4 bg-sb-green-5 border border-sb-light-green rounded-xl">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-emerald-100 rounded-lg">
-                            <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="p-2 bg-sb-green-10 rounded-lg">
+                            <svg className="w-5 h-5 text-sb-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-emerald-800">API Key Configured</p>
-                            <p className="text-xs text-emerald-600 font-mono">{geminiKeyMasked}</p>
+                            <p className="text-sm font-semibold text-sb-dark-green">API Key Configured</p>
+                            <p className="text-xs text-sb-green font-mono">{geminiKeyMasked}</p>
                           </div>
                         </div>
                         <button
@@ -1259,20 +1263,20 @@ function SettingsPageContent() {
                         </svg>
                       </button>
                     </div>
-                    <p className="mt-2 text-xs text-slate-500">
+                    <p className="mt-2 text-xs text-sb-grey-2">
                       Required for AI-powered invoice data extraction using Google Gemini Vision
                     </p>
                   </div>
 
-                  <div className="alert-info">
-                    <div className="p-1.5 bg-sky-100 rounded-lg">
-                      <svg className="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="alert-info rounded-lg">
+                    <div className="p-1.5 bg-sb-light-blue-10 rounded-lg">
+                      <svg className="w-4 h-4 text-sb-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <div className="text-sm">
-                      <p className="font-semibold text-sky-900 mb-1">How to get your Gemini API key:</p>
-                      <ol className="list-decimal list-inside space-y-0.5 text-xs text-sky-700">
+                    <div className="text-sm p-2">
+                      <p className="font-semibold text-sb-dark-blue mb-1">How to get your Gemini API key:</p>
+                      <ol className="list-decimal list-inside space-y-0.5 text-xs text-sb-dark-blue">
                         <li>Go to <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="underline">Google AI Studio</a></li>
                         <li>Sign in with your Google account</li>
                         <li>Click "Create API key"</li>
@@ -1282,7 +1286,7 @@ function SettingsPageContent() {
                   </div>
                 </div>
 
-                <div className="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                <div className="px-6 py-4 bg-sb-grey-2-10 border-t border-sb-grey-2-10">
                   <button 
                     onClick={handleSaveGeminiKey}
                     disabled={!geminiKey.trim() || saving}
@@ -1306,8 +1310,8 @@ function SettingsPageContent() {
           {activeTab === 'gmail' && (
             <div className="max-w-2xl animate-fade-in">
               <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-900">Gmail Integration</h3>
-                <p className="text-sm text-slate-500 mt-1">
+                <h3 className="text-lg font-bold text-sb-grey-1">Gmail Integration</h3>
+                <p className="text-sm text-sb-grey-2 mt-1">
                   Automatically scan your inbox for invoices and process them
                 </p>
               </div>
@@ -1316,17 +1320,17 @@ function SettingsPageContent() {
                 <div className="p-6 space-y-5">
                   {/* Connection Status */}
                   {settings?.gmail_connected ? (
-                    <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <div className="p-4 bg-sb-green-5 border border-sb-light-green rounded-xl">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-emerald-100 rounded-lg">
-                            <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="p-2 bg-sb-green-10 rounded-lg">
+                            <svg className="w-5 h-5 text-sb-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-emerald-800">Gmail Connected</p>
-                            <p className="text-xs text-emerald-600">{settings.gmail_email}</p>
+                            <p className="text-sm font-semibold text-sb-dark-green">Gmail Connected</p>
+                            <p className="text-xs text-sb-green">{settings.gmail_email}</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
@@ -1335,7 +1339,7 @@ function SettingsPageContent() {
                             onClick={handleToggleGmail}
                             disabled={saving}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              settings.gmail_enabled ? 'bg-emerald-600' : 'bg-slate-200'
+                              settings.gmail_enabled ? 'bg-sb-green' : 'bg-sb-grey-2-20'
                             }`}
                           >
                             <span
@@ -1356,14 +1360,14 @@ function SettingsPageContent() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 bg-sb-grey-2-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-sb-grey-2-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                       </div>
-                      <h4 className="text-lg font-semibold text-slate-800 mb-2">Connect Your Gmail</h4>
-                      <p className="text-sm text-slate-500 mb-6 max-w-md mx-auto">
-                        Allow AFA ZeroTouch AP™ to scan your inbox for invoices and automatically process them
+                      <h4 className="text-lg font-semibold text-sb-grey-1 mb-2">Connect Your Gmail</h4>
+                      <p className="text-sm text-sb-grey-2 mb-6 max-w-md mx-auto">
+                        Allow Sambe ZeroTouch AP™ to scan your inbox for invoices and automatically process them
                       </p>
                       <button
                         onClick={handleConnectGmail}
@@ -1383,10 +1387,10 @@ function SettingsPageContent() {
                   {settings?.gmail_connected && (
                     <>
                       {/* Manual Check Button */}
-                      <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                      <div className="flex items-center justify-between p-4 bg-sb-grey-2-10 rounded-xl">
                         <div>
-                          <p className="text-sm font-medium text-slate-800">Check for new invoices</p>
-                          <p className="text-xs text-slate-500">Manually scan your inbox now</p>
+                          <p className="text-sm font-medium text-sb-grey-1">Check for new invoices</p>
+                          <p className="text-xs text-sb-grey-2">Manually scan your inbox now</p>
                         </div>
                         <button
                           onClick={handleCheckGmail}
@@ -1409,18 +1413,18 @@ function SettingsPageContent() {
                         </button>
                       </div>
 
-                      <div className="border-t border-slate-100 pt-5">
-                        <h4 className="text-sm font-semibold text-slate-800 mb-3">How it works</h4>
+                      <div className="border-t border-sb-grey-2-10 pt-5">
+                        <h4 className="text-sm font-semibold text-sb-grey-1 mb-3">How it works</h4>
                         <ul className="space-y-4">
                           <li className="flex items-start space-x-3">
-                            <div className="w-9 h-9 bg-gradient-to-br from-sky-400 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                            <div className="w-9 h-9 bg-gradient-to-br from-sb-blue to-sb-blue rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                               <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">Monitor Inbox</p>
-                              <p className="text-xs text-slate-500">Scans new emails for invoice attachments</p>
+                              <p className="text-sm font-medium text-sb-grey-1">Monitor Inbox</p>
+                              <p className="text-xs text-sb-grey-2">Scans new emails for invoice attachments</p>
                             </div>
                           </li>
                           <li className="flex items-start space-x-3">
@@ -1430,44 +1434,44 @@ function SettingsPageContent() {
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">Extract PDFs</p>
-                              <p className="text-xs text-slate-500">Automatically downloads PDF invoices</p>
+                              <p className="text-sm font-medium text-sb-grey-1">Extract PDFs</p>
+                              <p className="text-xs text-sb-grey-2">Automatically downloads PDF invoices</p>
                             </div>
                           </li>
                           <li className="flex items-start space-x-3">
-                            <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                            <div className="w-9 h-9 bg-gradient-to-br from-sb-blue to-sb-dark-blue rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                               <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">AI Processing</p>
-                              <p className="text-xs text-slate-500">Extracts data using Gemini Vision</p>
+                              <p className="text-sm font-medium text-sb-grey-1">AI Processing</p>
+                              <p className="text-xs text-sb-grey-2">Extracts data using Gemini Vision</p>
                             </div>
                           </li>
                           <li className="flex items-start space-x-3">
-                            <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                            <div className="w-9 h-9 bg-gradient-to-br from-sb-green to-sb-green rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                               <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">Ready to Review</p>
-                              <p className="text-xs text-slate-500">Invoices appear in your dashboard</p>
+                              <p className="text-sm font-medium text-sb-grey-1">Ready to Review</p>
+                              <p className="text-xs text-sb-grey-2">Invoices appear in your dashboard</p>
                             </div>
                           </li>
                         </ul>
                       </div>
 
                       <div className="alert-info">
-                        <div className="p-1.5 bg-sky-100 rounded-lg">
-                          <svg className="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="p-1.5 bg-sb-light-blue-10 rounded-lg">
+                          <svg className="w-4 h-4 text-sb-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
                         <div className="text-sm">
-                          <p className="font-semibold text-sky-900 mb-1">Privacy Note</p>
-                          <p className="text-xs text-sky-700">
+                          <p className="font-semibold text-sb-dark-blue mb-1">Privacy Note</p>
+                          <p className="text-xs text-sb-dark-blue">
                             We only access emails with PDF attachments and never store the email content itself.
                             Only extracted invoice data is saved.
                           </p>
@@ -1484,8 +1488,8 @@ function SettingsPageContent() {
           {activeTab === 'smtp' && (
             <div className="max-w-2xl animate-fade-in">
               <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-900">SMTP/IMAP Email Integration</h3>
-                <p className="text-sm text-slate-500 mt-1">
+                <h3 className="text-lg font-bold text-sb-grey-1">SMTP/IMAP Email Integration</h3>
+                <p className="text-sm text-sb-grey-2 mt-1">
                   Connect any email account to automatically scan for invoice PDFs
                 </p>
               </div>
@@ -1494,17 +1498,17 @@ function SettingsPageContent() {
                 <div className="p-6 space-y-5">
                   {/* Connection Status */}
                   {settings?.smtp_connected ? (
-                    <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                    <div className="p-4 bg-sb-green-5 border border-sb-light-green rounded-xl">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-emerald-100 rounded-lg">
-                            <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="p-2 bg-sb-green-10 rounded-lg">
+                            <svg className="w-5 h-5 text-sb-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-emerald-800">Email Connected</p>
-                            <p className="text-xs text-emerald-600">{settings.smtp_email}</p>
+                            <p className="text-sm font-semibold text-sb-dark-green">Email Connected</p>
+                            <p className="text-xs text-sb-green">{settings.smtp_email}</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
@@ -1513,7 +1517,7 @@ function SettingsPageContent() {
                             onClick={handleToggleSmtp}
                             disabled={saving}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              settings.smtp_enabled ? 'bg-emerald-600' : 'bg-slate-200'
+                              settings.smtp_enabled ? 'bg-sb-green' : 'bg-sb-grey-2-20'
                             }`}
                           >
                             <span
@@ -1576,8 +1580,8 @@ function SettingsPageContent() {
 
                       {/* Server Configuration (for custom) */}
                       {selectedProvider === 'custom' && (
-                        <div className="space-y-4 p-4 bg-slate-50 rounded-xl">
-                          <p className="text-sm font-medium text-slate-700">Custom Server Settings</p>
+                        <div className="space-y-4 p-4 bg-sb-grey-2-10 rounded-xl">
+                          <p className="text-sm font-medium text-sb-green">Custom Server Settings</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                               <label className="label">IMAP Host</label>
@@ -1623,26 +1627,26 @@ function SettingsPageContent() {
                               type="checkbox"
                               checked={smtpForm.use_ssl}
                               onChange={(e) => setSmtpForm({ ...smtpForm, use_ssl: e.target.checked })}
-                              className="w-5 h-5 text-violet-600 border-slate-300 rounded focus:ring-violet-500"
+                              className="w-5 h-5 text-sb-blue border-sb-grey-2-20 rounded focus:ring-sb-blue"
                             />
-                            <span className="text-sm text-slate-700">Use SSL/TLS</span>
+                            <span className="text-sm text-sb-grey-2">Use SSL/TLS</span>
                           </label>
                         </div>
                       )}
 
                       {/* Help Info */}
-                      <div className="alert-info">
-                        <div className="p-1.5 bg-sky-100 rounded-lg">
-                          <svg className="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="alert-info rounded-lg">
+                        <div className="p-1.5 bg-sb-light-blue-10 rounded-lg">
+                          <svg className="w-4 h-4 text-sb-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
-                        <div className="text-sm">
-                          <p className="font-semibold text-sky-900 mb-1">Important: Use App Passwords</p>
-                          <p className="text-xs text-sky-700 mb-2">
+                        <div className="text-sm p-2.5 rounded-lg">
+                          <p className="font-semibold text-sb-dark-blue mb-1">Important: Use App Passwords</p>
+                          <p className="text-xs text-sb-dark-blue mb-2">
                             Most email providers require app-specific passwords for IMAP access. Regular passwords won&apos;t work.
                           </p>
-                          <ul className="list-disc list-inside space-y-0.5 text-xs text-sky-700">
+                          <ul className="list-disc list-inside space-y-0.5 text-xs text-sb-dark-blue">
                             <li>Gmail: Enable 2FA, then generate app password in Google Account settings</li>
                             <li>Outlook: Enable 2FA, then create app password in Microsoft account</li>
                             <li>Yahoo: Enable 2FA, then generate app password in Yahoo settings</li>
@@ -1697,10 +1701,10 @@ function SettingsPageContent() {
                   {settings?.smtp_connected && (
                     <>
                       {/* Manual Check Button */}
-                      <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                      <div className="flex items-center justify-between p-4 bg-sb-grey-2-10 rounded-xl">
                         <div>
-                          <p className="text-sm font-medium text-slate-800">Check for new invoices</p>
-                          <p className="text-xs text-slate-500">Manually scan your inbox now</p>
+                          <p className="text-sm font-medium text-sb-grey-1">Check for new invoices</p>
+                          <p className="text-xs text-sb-grey-2">Manually scan your inbox now</p>
                         </div>
                         <button
                           onClick={handleCheckSmtp}
@@ -1723,18 +1727,18 @@ function SettingsPageContent() {
                         </button>
                       </div>
 
-                      <div className="border-t border-slate-100 pt-5">
-                        <h4 className="text-sm font-semibold text-slate-800 mb-3">How it works</h4>
+                      <div className="border-t border-sb-grey-2-10 pt-5">
+                        <h4 className="text-sm font-semibold text-sb-grey-1 mb-3">How it works</h4>
                         <ul className="space-y-4">
                           <li className="flex items-start space-x-3">
-                            <div className="w-9 h-9 bg-gradient-to-br from-sky-400 to-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                            <div className="w-9 h-9 bg-gradient-to-br from-sb-blue to-sb-blue rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                               <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">Scan Inbox via IMAP</p>
-                              <p className="text-xs text-slate-500">Connects to any email server using IMAP protocol</p>
+                              <p className="text-sm font-medium text-sb-grey-1">Scan Inbox via IMAP</p>
+                              <p className="text-xs text-sb-grey-2">Connects to any email server using IMAP protocol</p>
                             </div>
                           </li>
                           <li className="flex items-start space-x-3">
@@ -1744,44 +1748,44 @@ function SettingsPageContent() {
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">Extract PDF Attachments</p>
-                              <p className="text-xs text-slate-500">Downloads PDF invoices from email attachments</p>
+                              <p className="text-sm font-medium text-sb-grey-1">Extract PDF Attachments</p>
+                              <p className="text-xs text-sb-grey-2">Downloads PDF invoices from email attachments</p>
                             </div>
                           </li>
                           <li className="flex items-start space-x-3">
-                            <div className="w-9 h-9 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                            <div className="w-9 h-9 bg-gradient-to-br from-sb-blue to-sb-dark-blue rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                               <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">AI Processing</p>
-                              <p className="text-xs text-slate-500">Extracts data using Gemini Vision</p>
+                              <p className="text-sm font-medium text-sb-grey-1">AI Processing</p>
+                              <p className="text-xs text-sb-grey-2">Extracts data using Gemini Vision</p>
                             </div>
                           </li>
                           <li className="flex items-start space-x-3">
-                            <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                            <div className="w-9 h-9 bg-gradient-to-br from-sb-green to-sb-green rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                               <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-800">Ready to Review</p>
-                              <p className="text-xs text-slate-500">Invoices appear in your dashboard</p>
+                              <p className="text-sm font-medium text-sb-grey-1">Ready to Review</p>
+                              <p className="text-xs text-sb-grey-2">Invoices appear in your dashboard</p>
                             </div>
                           </li>
                         </ul>
                       </div>
 
                       <div className="alert-info">
-                        <div className="p-1.5 bg-sky-100 rounded-lg">
-                          <svg className="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="p-1.5 bg-sb-light-blue-10 rounded-lg">
+                          <svg className="w-4 h-4 text-sb-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
                         <div className="text-sm">
-                          <p className="font-semibold text-sky-900 mb-1">Privacy Note</p>
-                          <p className="text-xs text-sky-700">
+                          <p className="font-semibold text-sb-dark-blue mb-1">Privacy Note</p>
+                          <p className="text-xs text-sb-dark-blue">
                             Your email credentials are stored securely. We only access emails with PDF attachments
                             and never store the email content itself. Only extracted invoice data is saved.
                           </p>
@@ -1798,22 +1802,22 @@ function SettingsPageContent() {
           {activeTab === 'preferences' && (
             <div className="max-w-2xl animate-fade-in">
               <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-900">Preferences</h3>
-                <p className="text-sm text-slate-500 mt-1">
-                  Customize your AFA ZeroTouch AP™ experience
+                <h3 className="text-lg font-bold text-sb-grey-1">Preferences</h3>
+                <p className="text-sm text-sb-grey-2 mt-1">
+                  Customize your Sambe ZeroTouch AP™ experience
                 </p>
               </div>
 
-              <div className="card divide-y divide-slate-100">
+              <div className="card divide-y divide-sb-grey-2-10">
                 <div className="flex items-center justify-between p-5">
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-900">Auto-process uploads</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">Automatically process invoices after upload</p>
+                    <h4 className="text-sm font-semibold text-sb-grey-1">Auto-process uploads</h4>
+                    <p className="text-xs text-sb-grey-2 mt-0.5">Automatically process invoices after upload</p>
                   </div>
                   <button
                     onClick={() => handleUpdatePreference('auto_process')}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      preferences.auto_process ? 'bg-violet-600' : 'bg-slate-200'
+                      preferences.auto_process ? 'bg-sb-blue' : 'bg-sb-grey-2-20'
                     }`}
                   >
                     <span
@@ -1825,13 +1829,13 @@ function SettingsPageContent() {
                 </div>
                 <div className="flex items-center justify-between p-5">
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-900">Email notifications</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">Get notified when processing completes</p>
+                    <h4 className="text-sm font-semibold text-sb-grey-1">Email notifications</h4>
+                    <p className="text-xs text-sb-grey-2 mt-0.5">Get notified when processing completes</p>
                   </div>
                   <button
                     onClick={() => handleUpdatePreference('email_notifications')}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      preferences.email_notifications ? 'bg-violet-600' : 'bg-slate-200'
+                      preferences.email_notifications ? 'bg-sb-blue' : 'bg-sb-grey-2-20'
                     }`}
                   >
                     <span
@@ -1843,13 +1847,13 @@ function SettingsPageContent() {
                 </div>
                 <div className="flex items-center justify-between p-5">
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-900">Auto-sync to ERP</h4>
-                    <p className="text-xs text-slate-500 mt-0.5">Automatically sync processed invoices to connected ERPs</p>
+                    <h4 className="text-sm font-semibold text-sb-grey-1">Auto-sync to ERP</h4>
+                    <p className="text-xs text-sb-grey-2 mt-0.5">Automatically sync processed invoices to connected ERPs</p>
                   </div>
                   <button
                     onClick={() => handleUpdatePreference('auto_sync_erp')}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      preferences.auto_sync_erp ? 'bg-violet-600' : 'bg-slate-200'
+                      preferences.auto_sync_erp ? 'bg-sb-blue' : 'bg-sb-grey-2-20'
                     }`}
                   >
                     <span
@@ -1870,14 +1874,14 @@ function SettingsPageContent() {
         <div className="modal-overlay" onClick={() => setShowConfigModal(false)}>
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden animate-modal-enter" onClick={e => e.stopPropagation()}>
             {/* Modal Header */}
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+            <div className="px-6 py-5 border-b border-sb-grey-2-10 flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 {getERPLogo(selectedIntegration.id, 'w-10 h-10')}
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">
+                  <h3 className="text-lg font-bold text-sb-grey-1">
                     Connect {selectedIntegration.name}
                   </h3>
-                  <p className="text-xs text-slate-500">Enter your API credentials</p>
+                  <p className="text-xs text-sb-grey-2">Enter your API credentials</p>
                 </div>
               </div>
               <button onClick={() => setShowConfigModal(false)} className="btn-icon">
@@ -1917,7 +1921,7 @@ function SettingsPageContent() {
 
               <div>
                 <label className="label">
-                  Organization ID <span className="text-slate-400 font-normal">(Optional)</span>
+                  Organization ID <span className="text-sb-grey-2-50 font-normal">(Optional)</span>
                 </label>
                 <input
                   type="text"
@@ -1933,20 +1937,20 @@ function SettingsPageContent() {
                   type="checkbox"
                   checked={configForm.autoSync}
                   onChange={(e) => setConfigForm({ ...configForm, autoSync: e.target.checked })}
-                  className="w-5 h-5 text-violet-600 border-slate-300 rounded focus:ring-violet-500"
+                  className="w-5 h-5 text-sb-blue border-sb-grey-2-20 rounded focus:ring-sb-blue"
                 />
-                <span className="text-sm text-slate-700">Automatically sync new invoices</span>
+                <span className="text-sm text-sb-grey-2">Automatically sync new invoices</span>
               </label>
 
               <div className="alert-info">
-                <div className="p-1.5 bg-sky-100 rounded-lg">
-                  <svg className="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-1.5 bg-sb-light-blue-10 rounded-lg">
+                  <svg className="w-4 h-4 text-sb-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div className="text-sm">
-                  <p className="font-semibold text-sky-900 mb-1">How to get credentials:</p>
-                  <ol className="list-decimal list-inside space-y-0.5 text-xs text-sky-700">
+                  <p className="font-semibold text-sb-dark-blue mb-1">How to get credentials:</p>
+                  <ol className="list-decimal list-inside space-y-0.5 text-xs text-sb-dark-blue">
                     <li>Log in to your {selectedIntegration.name} account</li>
                     <li>Navigate to Settings → API / Integrations</li>
                     <li>Generate or copy your API credentials</li>
@@ -1956,7 +1960,7 @@ function SettingsPageContent() {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+            <div className="px-6 py-4 bg-sb-grey-2-10 border-t border-sb-grey-2-10 flex items-center justify-between">
               <button
                 onClick={handleTestConnection}
                 disabled={!configForm.apiKey || !configForm.apiSecret || saving}
@@ -2011,20 +2015,20 @@ function SettingsPageContent() {
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-fade-in">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-sb-blue to-sb-dark-blue rounded-xl flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">Configure Xero</h3>
-                  <p className="text-xs text-slate-500">Enter your OAuth credentials</p>
+                  <h3 className="text-lg font-bold text-sb-grey-1">Configure Xero</h3>
+                  <p className="text-xs text-sb-grey-2">Enter your OAuth credentials</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowXeroConfigModal(false)}
-                className="text-slate-400 hover:text-slate-600 transition-colors"
+                className="text-sb-grey-2-50 hover:text-sb-grey-2 transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -2034,7 +2038,7 @@ function SettingsPageContent() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-sb-green mb-2">
                   Client ID <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -2042,12 +2046,12 @@ function SettingsPageContent() {
                   value={xeroConfigForm.client_id}
                   onChange={(e) => setXeroConfigForm({ ...xeroConfigForm, client_id: e.target.value })}
                   placeholder="Enter Xero Client ID"
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-sb-grey-2-20 rounded-lg focus:outline-none focus:ring-2 focus:ring-sb-blue focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-sb-green mb-2">
                   Client Secret <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -2055,32 +2059,32 @@ function SettingsPageContent() {
                   value={xeroConfigForm.client_secret}
                   onChange={(e) => setXeroConfigForm({ ...xeroConfigForm, client_secret: e.target.value })}
                   placeholder="Enter Xero Client Secret"
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-sb-grey-2-20 rounded-lg focus:outline-none focus:ring-2 focus:ring-sb-blue focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Redirect URI <span className="text-slate-400 text-xs">(Optional)</span>
+                <label className="block text-sm font-medium text-sb-green mb-2">
+                  Redirect URI <span className="text-sb-grey-2-50 text-xs">(Optional)</span>
                 </label>
                 <input
                   type="text"
                   value={xeroConfigForm.redirect_uri}
                   onChange={(e) => setXeroConfigForm({ ...xeroConfigForm, redirect_uri: e.target.value })}
                   placeholder={typeof window !== 'undefined' ? `${window.location.origin}/settings` : ''}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-4 py-2 border border-sb-grey-2-20 rounded-lg focus:outline-none focus:ring-2 focus:ring-sb-blue focus:border-transparent text-sm"
                 />
-                <p className="text-xs text-slate-500 mt-1">Leave empty to use default</p>
+                <p className="text-xs text-sb-grey-2 mt-1">Leave empty to use default</p>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="bg-sb-blue-5 border border-sb-light-blue rounded-lg p-3">
                 <div className="flex items-start space-x-2">
-                  <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-sb-blue mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <div className="text-xs text-blue-800">
+                  <div className="text-xs text-sb-dark-blue">
                     <p className="font-semibold mb-1">How to get these credentials:</p>
-                    <ol className="list-decimal list-inside space-y-1 text-blue-700">
+                    <ol className="list-decimal list-inside space-y-1 text-sb-blue">
                       <li>Go to <a href="https://developer.xero.com" target="_blank" rel="noopener noreferrer" className="underline">developer.xero.com</a></li>
                       <li>Create a new app or use existing</li>
                       <li>Copy Client ID and Client Secret</li>
@@ -2094,14 +2098,14 @@ function SettingsPageContent() {
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => setShowXeroConfigModal(false)}
-                className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium"
+                className="flex-1 px-4 py-2.5 border border-sb-grey-2-20 text-sb-grey-2 rounded-lg hover:bg-sb-grey-2-10 transition-colors font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveXeroConfig}
                 disabled={saving || !xeroConfigForm.client_id || !xeroConfigForm.client_secret}
-                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all font-medium shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-sb-blue to-sb-dark-blue text-white rounded-lg hover:from-sb-dark-blue hover:to-sb-dark-blue transition-all font-medium shadow-lg shadow-sb-blue/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 {saving ? 'Saving...' : 'Save & Connect'}
               </button>
@@ -2118,8 +2122,8 @@ export default function SettingsPage() {
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="spinner w-12 h-12 border-4 border-violet-600 mx-auto"></div>
-          <p className="mt-4 text-slate-600 font-medium">Loading settings...</p>
+          <div className="spinner w-12 h-12 border-4 border-sb-blue mx-auto"></div>
+          <p className="mt-4 text-sb-grey-2 font-medium">Loading settings...</p>
         </div>
       </div>
     }>

@@ -25,26 +25,26 @@ export default function PDFViewer({ pdfUrl }: PDFViewerProps) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-100">
+    <div className="h-full flex flex-col bg-sb-grey-2-10">
       <div className="flex-1 relative overflow-auto">
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-sb-grey-2-10 z-10">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading PDF...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sb-blue mx-auto"></div>
+              <p className="mt-4 text-sb-grey-2">Loading PDF...</p>
             </div>
           </div>
         )}
 
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-sb-grey-2-10 z-10">
             <div className="text-center text-red-600">
               <p>{error}</p>
               <a 
                 href={pdfUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="mt-4 inline-block px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+                className="mt-4 inline-block px-4 py-2 bg-sb-blue text-white rounded hover:bg-sb-dark-blue"
               >
                 Open PDF in New Tab
               </a>

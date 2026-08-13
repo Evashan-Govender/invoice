@@ -36,14 +36,14 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
     <div className="card p-6">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-sb-green to-sb-green rounded-xl flex items-center justify-center">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-900">Line Items</h3>
-            <p className="text-sm text-slate-500">{items.length} item{items.length !== 1 ? 's' : ''}</p>
+            <h3 className="text-lg font-bold text-sb-grey-1">Line Items</h3>
+            <p className="text-sm text-sb-grey-2">{items.length} item{items.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
         <button
@@ -72,13 +72,13 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
             {items.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-12 text-center">
-                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 bg-sb-grey-2-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-sb-grey-2-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                   </div>
-                  <p className="text-slate-500 font-medium mb-1">No line items</p>
-                  <p className="text-slate-400 text-sm">Click "Add Row" to add items</p>
+                  <p className="text-sb-grey-2 font-medium mb-1">No line items</p>
+                  <p className="text-sb-grey-2-50 text-sm">Click "Add Row" to add items</p>
                 </td>
               </tr>
             ) : (
@@ -92,7 +92,7 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
                         handleItemChange(index, 'description', e.target.value)
                       }
                       onFocus={() => onFieldFocus && onFieldFocus(`Line Item ${index + 1} - Description`)}
-                      className="w-full px-3 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all"
+                      className="w-full px-3 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-sb-light-blue focus:ring-2 focus:ring-sb-blue-10 outline-none transition-all"
                       placeholder="Item description"
                     />
                   </td>
@@ -107,7 +107,7 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all text-right font-mono"
+                      className="w-full px-3 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-sb-light-blue focus:ring-2 focus:ring-sb-blue-10 outline-none transition-all text-right font-mono"
                     />
                   </td>
                   <td className="px-4 py-3">
@@ -122,7 +122,7 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all text-right font-mono"
+                      className="w-full px-3 py-2 bg-transparent border border-transparent rounded-lg focus:bg-white focus:border-sb-light-blue focus:ring-2 focus:ring-sb-blue-10 outline-none transition-all text-right font-mono"
                     />
                   </td>
                   <td className="px-4 py-3">
@@ -137,13 +137,13 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 bg-violet-50 border border-violet-100 rounded-lg focus:bg-white focus:border-violet-300 focus:ring-2 focus:ring-violet-100 outline-none transition-all text-right font-mono font-semibold text-violet-700"
+                      className="w-full px-3 py-2 bg-sb-blue-5 border border-sb-blue-10 rounded-lg focus:bg-white focus:border-sb-light-blue focus:ring-2 focus:ring-sb-blue-10 outline-none transition-all text-right font-mono font-semibold text-sb-dark-blue"
                     />
                   </td>
                   <td className="px-4 py-3 text-center">
                     <button
                       onClick={() => handleRemoveRow(index)}
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                      className="p-2 text-sb-grey-2-50 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                       title="Remove row"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,11 +160,11 @@ export default function LineItemsTable({ items, onChange, onFieldFocus }: LineIt
 
       {/* Summary Footer */}
       {items.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-slate-100 flex justify-end">
+        <div className="mt-4 pt-4 border-t border-sb-grey-2-10 flex justify-end">
           <div className="w-64 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Subtotal ({items.length} items)</span>
-              <span className="font-mono font-medium text-slate-700">
+              <span className="text-sb-grey-2">Subtotal ({items.length} items)</span>
+              <span className="font-mono font-medium text-sb-grey-2">
                 {items.reduce((sum, item) => sum + (item.total_price || 0), 0).toFixed(2)}
               </span>
             </div>

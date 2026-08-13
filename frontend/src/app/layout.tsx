@@ -1,16 +1,9 @@
 import type { Metadata } from 'next'
-import { Outfit } from 'next/font/google'
 import './globals.css'
 
-const outfit = Outfit({ 
-  subsets: ['latin'],
-  variable: '--font-outfit',
-  display: 'swap',
-})
-
 export const metadata: Metadata = {
-  title: 'AFA ZeroTouch AP™ - Intelligent Invoice Processing',
-  description: 'AI-powered invoice data extraction and ERP integration using Gemini Vision',
+  title: 'ZeroTouch AP™ - Intelligent Invoice Processing | Sambe Consulting',
+  description: 'AI-powered invoice data extraction and ERP integration — powered by Sambe Consulting',
   icons: {
     icon: '/favicon.ico',
   },
@@ -22,9 +15,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={outfit.variable}>
-      <body className={`${outfit.className} antialiased`}>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-slate-100">
+    <html lang="en">
+      {/* h-full on html+body allows sidebar children to stretch to full viewport height */}
+      <body className="antialiased h-full">
+        <div className="min-h-screen h-full bg-sb-blue/10">
           {children}
         </div>
       </body>

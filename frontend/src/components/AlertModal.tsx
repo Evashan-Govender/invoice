@@ -38,11 +38,11 @@ const iconMap = {
 
 const colorMap = {
   success: {
-    bg: 'bg-emerald-50',
-    iconBg: 'bg-emerald-100',
-    iconColor: 'text-emerald-600',
-    title: 'text-emerald-800',
-    button: 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500',
+    bg: 'bg-sb-green-5',
+    iconBg: 'bg-sb-green-10',
+    iconColor: 'text-sb-green',
+    title: 'text-sb-dark-green',
+    button: 'bg-sb-dark-green hover:bg-sb-dark-green focus:ring-sb-green',
   },
   error: {
     bg: 'bg-red-50',
@@ -52,11 +52,11 @@ const colorMap = {
     button: 'bg-red-600 hover:bg-red-700 focus:ring-red-500',
   },
   info: {
-    bg: 'bg-sky-50',
-    iconBg: 'bg-sky-100',
-    iconColor: 'text-sky-600',
-    title: 'text-sky-800',
-    button: 'bg-sky-600 hover:bg-sky-700 focus:ring-sky-500',
+    bg: 'bg-sb-light-blue-10',
+    iconBg: 'bg-sb-light-blue-10',
+    iconColor: 'text-sb-dark-blue',
+    title: 'text-sb-dark-blue',
+    button: 'bg-sb-dark-blue hover:bg-sb-blue focus:ring-sb-blue',
   },
   warning: {
     bg: 'bg-amber-50',
@@ -141,7 +141,7 @@ export default function AlertModal({
               >
                 {displayTitle}
               </h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+              <p className="mt-2 text-sm text-sb-grey-2 leading-relaxed">
                 {message}
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function AlertModal({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-white border-t border-slate-100 flex justify-end">
+        <div className="px-6 py-4 bg-white border-t border-sb-grey-2-10 flex justify-end">
           <button
             onClick={onClose}
             className={`px-5 py-2.5 rounded-xl text-white font-medium text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${colors.button}`}

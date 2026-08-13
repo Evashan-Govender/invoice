@@ -40,37 +40,40 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-violet-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-sb-dark-blue via-sb-blue to-sb-dark-blue relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         
         {/* Floating Shapes */}
         <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse-slow animation-delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-300/10 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-sb-light-blue/20 rounded-full blur-3xl animate-pulse-slow animation-delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-sb-light-blue/10 rounded-full blur-2xl"></div>
         
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center px-16 xl:px-24">
           <div className="mb-12">
             {/* Logo */}
             <div className="flex items-center space-x-4 mb-8">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-2xl p-2">
+              <div className="w-fit h-20 flex items-center justify-start p-2 bg-white rounded-xl pr-6">
                 <Image 
-                  src="/AFA-Ranged-Logo-White.png" 
-                  alt="AFA ZeroTouch AP" 
-                  width={40} 
+                  src="/sambe-light-mode-logo.png" 
+                  alt="Sambe Consulting" 
+                  width={140} 
                   height={40}
                   className="object-contain"
                 />
+                  <div className='ml-6'>
+              <h1 className="text-xl font-bold gradient-text">ZeroTouch AP™</h1>
+              <p className="text-xs text-sb-grey-2-50">Powered by Gemini</p>
+            </div>
               </div>
-              <h1 className="text-4xl font-bold text-white">AFA ZeroTouch AP™</h1>
             </div>
             
-            <h2 className="text-3xl xl:text-4xl font-bold text-white leading-tight mb-6">
+            <h2 className="text-3xl  font-bold text-white leading-tight mb-6">
               Transform Your Invoice<br />
-              <span className="text-violet-200">Processing Workflow</span>
+              <span className="text-sb-light-blue-20 text-2xl">Processing Workflow</span>
             </h2>
-            <p className="text-lg text-violet-100/80 leading-relaxed max-w-md">
+            <p className="text-lg text-sb-blue-10/80 leading-relaxed max-w-md">
               Harness the power of AI to extract, validate, and sync invoice data automatically. 
               Save hours of manual data entry with intelligent automation.
             </p>
@@ -89,7 +92,7 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <h3 className="text-white font-semibold">{feature.title}</h3>
-                  <p className="text-violet-200/70 text-sm">{feature.desc}</p>
+                  <p className="text-sb-light-blue-20/70 text-sm">{feature.desc}</p>
                 </div>
               </div>
             ))}
@@ -98,45 +101,45 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-gradient-to-br from-slate-50 to-violet-50/50">
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-gradient-to-br from-sb-grey-2-10 to-sb-blue-5/50">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden mb-10 text-center">
             <div className="inline-flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-slate-200/50 p-2">
                 <Image 
-                  src="/AFA-Ranged-Logo-Dark.png" 
-                  alt="AFA ZeroTouch AP" 
+                  src="/sambe-light-mode-logo.png" 
+                  alt="Sambe Consulting" 
                   width={32} 
                   height={32}
                   className="object-contain"
                 />
               </div>
-              <h1 className="text-2xl font-bold gradient-text">AFA ZeroTouch AP™</h1>
+              <h1 className="text-2xl font-bold gradient-text">ZeroTouch AP™</h1>
             </div>
           </div>
 
           {/* Card */}
-          <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 md:p-10">
+          <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-sb-grey-2-10 p-8 md:p-10">
             {/* Header */}
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-slate-900">
+              <h2 className="text-2xl font-bold text-sb-dark-blue">
                 {isLogin ? 'Welcome back' : 'Create account'}
               </h2>
-              <p className="text-slate-500 mt-2">
+              <p className="text-sb-grey-2 mt-2">
                 {isLogin 
                   ? 'Sign in to continue to your dashboard' 
-                  : 'Start your journey with AFA ZeroTouch AP™'}
+                  : 'Start your journey with Sambe ZeroTouch AP™'}
               </p>
             </div>
 
             {/* Tabs */}
-            <div className="flex bg-slate-100 p-1 rounded-xl mb-8">
+            <div className="flex bg-sb-grey-2-10 p-1 rounded-xl mb-8">
               <button
                 className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all duration-200 ${
                   isLogin
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white text-sb-grey-1 shadow-sm'
+                    : 'text-sb-grey-2 hover:text-sb-grey-2'
                 }`}
                 onClick={() => setIsLogin(true)}
               >
@@ -145,8 +148,8 @@ export default function LoginPage() {
               <button
                 className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all duration-200 ${
                   !isLogin
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-white text-sb-grey-1 shadow-sm'
+                    : 'text-sb-grey-2 hover:text-sb-grey-2'
                 }`}
                 onClick={() => setIsLogin(false)}
               >
@@ -172,7 +175,7 @@ export default function LoginPage() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-sb-grey-2-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                     </svg>
                   </div>
@@ -194,7 +197,7 @@ export default function LoginPage() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-sb-grey-2-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
@@ -213,10 +216,10 @@ export default function LoginPage() {
               {isLogin && (
                 <div className="flex items-center justify-between">
                   <label className="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500" />
-                    <span className="text-sm text-slate-600">Remember me</span>
+                    <input type="checkbox" className="w-4 h-4 rounded border-sb-grey-2-20 text-sb-blue focus:ring-sb-blue" />
+                    <span className="text-sm text-sb-grey-2">Remember me</span>
                   </label>
-                  <button type="button" className="text-sm font-medium text-violet-600 hover:text-violet-700">
+                  <button type="button" className="text-sm font-medium text-sb-blue hover:text-sb-dark-blue">
                     Forgot password?
                   </button>
                 </div>
@@ -241,8 +244,8 @@ export default function LoginPage() {
           </div>
 
           {/* Footer */}
-          <p className="text-center text-slate-500 mt-8 text-sm">
-            AG Tech Consulting PTE Ltd © 2025
+          <p className="sambe-copyright mt-8">
+            © {new Date().getFullYear()} Sambe Consulting (Pty) Ltd. All rights reserved.
           </p>
         </div>
       </div>

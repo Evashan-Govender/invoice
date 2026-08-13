@@ -68,9 +68,16 @@ class InvoiceService:
         os.makedirs(user_dir, exist_ok=True)
         
         # Generate unique filename
+        # Strip any directory components from the original filename to prevent
+        # path traversal issues (e.g. "folder/invoice.pdf" -> "invoice.pdf")
         import time
+        safe_name = os.path.basename(file.filename.replace("\\", "/"))
         timestamp = int(time.time() * 1000)
+<<<<<<< HEAD
         filename = f"{timestamp}_{self.get_safe_filename(file.filename)}"
+=======
+        filename = f"{timestamp}_{safe_name}"
+>>>>>>> 37b73d54c8112b5b834fe525c12cfa169484ac69
         file_path = os.path.join(user_dir, filename)
         
         # Save file

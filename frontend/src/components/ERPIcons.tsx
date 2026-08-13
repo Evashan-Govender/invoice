@@ -66,7 +66,7 @@ export const getERPLogo = (id: string, className?: string) => {
     return <LogoComponent className={className} />;
   }
   return (
-    <div className={`${className || 'w-10 h-10'} bg-gray-400 rounded-lg flex items-center justify-center`}>
+    <div className={`${className || 'w-10 h-10'} bg-sb-grey-2 rounded-lg flex items-center justify-center`}>
       <span className="text-white text-xs font-bold">{id.charAt(0).toUpperCase()}</span>
     </div>
   );
