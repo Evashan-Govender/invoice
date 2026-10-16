@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File,
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, model_validator
 from datetime import datetime
 from ..database import get_db
 from ..models import User, Invoice, InvoiceData
@@ -60,7 +60,19 @@ class AmendDataRequest(BaseModel):
 class PowerAutomateInvoiceRequest(BaseModel):
     filename: str
     file_content: str
-    user_email: EmailStr
+    user_email: Optional[EmailStr] = None
+    user_name: Optional[EmailStr] = None
+    email: Optional[EmailStr] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def resolve_email_fields(cls, data: any):
+        if isinstance(data, dict):
+            if not data.get("user_email"):
+                resolved = data.get("user_name") or data.get("email")
+                if resolved:
+                    data["user_email"] = resolved
+        return data
 
 
 MAX_INTEGRATION_FILE_BYTES = 25 * 1024 * 1024
@@ -86,6 +98,9 @@ def ingest_power_automate_invoice(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invoice file is empty")
     if len(content) > MAX_INTEGRATION_FILE_BYTES:
         raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="Invoice file exceeds 25 MB")
+
+    if not request.user_email:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user_email is required")
 
     user_email = str(request.user_email).strip().lower()
     user = db.query(User).filter(func.lower(User.email) == user_email).first()

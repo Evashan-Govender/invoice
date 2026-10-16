@@ -51,9 +51,11 @@ export default function DashboardPage() {
   const [dragActive, setDragActive] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [activeView, setActiveView] = useState<'dashboard' | 'upload' | 'invoices'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'upload' | 'email' | 'invoices'>('dashboard');
   const [selectedInvoices, setSelectedInvoices] = useState<Set<number>>(new Set());
   const [bulkProcessing, setBulkProcessing] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState<Stats>({
     totalInvoices: 0,
     completed: 0,
@@ -214,10 +216,37 @@ export default function DashboardPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const view = params.get('view');
-    if (view === 'invoices') {
-      setActiveView('invoices');
+    if (view === 'invoices' || view === 'email' || view === 'upload') {
+      setActiveView(view as any);
     }
   }, []);
+
+  // Real-time polling when Email view is active
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const interval = setInterval(async () => {
+      if (activeView === 'email' || activeView === 'dashboard') {
+        try {
+          const data = await api.getInvoices();
+          setInvoices(data);
+          setStats(calculateStats(data));
+        } catch (e) {
+          // Silent polling fail
+        }
+      }
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [activeView, autoRefresh]);
+
+  const handleManualRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await loadInvoices();
+    } finally {
+      setTimeout(() => setRefreshing(false), 500);
+    }
+  };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -466,6 +495,24 @@ export default function DashboardPage() {
           </button>
 
           <button
+            onClick={() => setActiveView('email')}
+            className={activeView === 'email' ? 'sidebar-link-active' : 'sidebar-link'}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span>Email Invoices</span>
+            <span className="ml-auto flex items-center space-x-1.5">
+              <span className="w-2 h-2 rounded-full bg-sb-green animate-pulse" title="Live Auto-Sync Active"></span>
+              {stats.pending > 0 && (
+                <span className="text-white text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500">
+                  {stats.pending}
+                </span>
+              )}
+            </span>
+          </button>
+
+          <button
             onClick={() => setActiveView('invoices')}
             className={activeView === 'invoices' ? 'sidebar-link-active' : 'sidebar-link'}
           >
@@ -533,11 +580,13 @@ export default function DashboardPage() {
               <h2 className="text-2xl font-bold text-sb-dark-blue">
                 {activeView === 'dashboard' && 'Dashboard'}
                 {activeView === 'upload' && 'Upload Invoices'}
+                {activeView === 'email' && 'Email & Automated Invoices'}
                 {activeView === 'invoices' && 'Processed Invoices'}
               </h2>
               <p className="text-sm text-sb-grey-2 mt-1">
                 {activeView === 'dashboard' && 'Overview of your invoice processing'}
                 {activeView === 'upload' && 'Upload and process new invoices'}
+                {activeView === 'email' && 'Real-time invoices automatically received via Email & Power Automate'}
                 {activeView === 'invoices' && 'View and manage processed invoices'}
               </p>
             </div>
@@ -1059,6 +1108,343 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* Email Invoices View */}
+          {activeView === 'email' && (
+            <div className="animate-fade-in space-y-6">
+              {/* Ingestion Status Banner */}
+              <div className="card p-6 bg-gradient-to-r from-sb-blue-5 via-white to-sb-green-5 border border-sb-light-blue-20 shadow-sm">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sb-blue to-sb-dark-blue flex items-center justify-center flex-shrink-0 shadow-md">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-3">
+                        <h3 className="text-lg font-bold text-sb-grey-1">Automated Email & Webhook Ingestion</h3>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
+                          <span className="w-2 h-2 rounded-full bg-sb-green mr-1.5 animate-pulse"></span>
+                          Live Webhook Active
+                        </span>
+                      </div>
+                      <p className="text-sm text-sb-grey-2 mt-1">
+                        Invoices received via Power Automate, OneDrive, or Email are automatically registered to <strong className="text-sb-dark-blue">{user?.email}</strong> and appear below in real-time.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3 flex-shrink-0">
+                    <button
+                      onClick={() => setAutoRefresh(!autoRefresh)}
+                      className={`px-3 py-2 text-xs font-semibold rounded-xl border transition-all duration-200 flex items-center space-x-2 ${
+                        autoRefresh
+                          ? 'bg-sb-green-10 text-sb-green border-sb-light-green'
+                          : 'bg-sb-grey-2-10 text-sb-grey-2 border-sb-grey-2-20'
+                      }`}
+                      title="Toggle real-time auto-refresh polling"
+                    >
+                      <span className={`w-2 h-2 rounded-full ${autoRefresh ? 'bg-sb-green animate-pulse' : 'bg-sb-grey-2'}`}></span>
+                      <span>Auto-Refresh: {autoRefresh ? 'ON' : 'OFF'}</span>
+                    </button>
+
+                    <button
+                      onClick={handleManualRefresh}
+                      disabled={refreshing}
+                      className="btn-secondary py-2 px-4 text-xs font-semibold flex items-center space-x-2"
+                    >
+                      <svg
+                        className={`w-4 h-4 ${refreshing ? 'animate-spin text-sb-blue' : 'text-sb-grey-2'}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      <span>{refreshing ? 'Syncing...' : 'Sync Now'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quick Endpoint Info Bar */}
+                <div className="mt-4 pt-4 border-t border-sb-grey-2-10 flex flex-wrap items-center justify-between gap-3 text-xs text-sb-grey-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-semibold text-sb-grey-1">Ingestion Endpoint:</span>
+                    <code className="px-2 py-1 bg-white border border-sb-grey-2-20 rounded text-sb-dark-blue font-mono font-medium">
+                      POST /invoices/webhook/json
+                    </code>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <span>Target Account: <strong className="text-sb-grey-1">{user?.email}</strong></span>
+                    <span className="text-sb-grey-2-30">•</span>
+                    <span>Total Invoices: <strong className="text-sb-green">{stats.totalInvoices}</strong></span>
+                    <span className="text-sb-grey-2-30">•</span>
+                    <span>Pending: <strong className="text-amber-600">{stats.pending}</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Invoices List Table */}
+              {invoices.length === 0 ? (
+                <div className="card p-16 text-center">
+                  <div className="w-20 h-20 bg-sb-blue-5 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-sb-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-sb-grey-1 mb-2">No email invoices received yet</h3>
+                  <p className="text-sb-grey-2 mb-6 max-w-md mx-auto">
+                    Configure your Power Automate flow or forward invoices to your ingestion webhook to have them processed here automatically.
+                  </p>
+                  <div className="flex justify-center space-x-4">
+                    <button
+                      onClick={() => setActiveView('upload')}
+                      className="btn-primary px-6 py-2.5"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      Upload Manually
+                    </button>
+                    <button
+                      onClick={handleManualRefresh}
+                      className="btn-secondary px-6 py-2.5"
+                    >
+                      Check for New Invoices
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* Bulk Actions Bar */}
+                  {selectedInvoices.size > 0 && (
+                    <div className="p-4 bg-sb-blue-5 border border-sb-light-blue-20 rounded-xl flex items-center justify-between animate-fade-in">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-sm font-semibold text-sb-grey-1">
+                          {selectedInvoices.size} invoice{selectedInvoices.size !== 1 ? 's' : ''} selected
+                        </span>
+                        <button
+                          onClick={() => setSelectedInvoices(new Set())}
+                          className="text-sm text-sb-blue hover:text-sb-dark-blue font-medium"
+                        >
+                          Clear selection
+                        </button>
+                      </div>
+                      <button
+                        onClick={handleBulkProcess}
+                        disabled={bulkProcessing}
+                        className="btn-primary"
+                      >
+                        {bulkProcessing ? (
+                          <span className="flex items-center space-x-2">
+                            <div className="spinner w-4 h-4"></div>
+                            <span>Processing...</span>
+                          </span>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Process Selected
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="table-container">
+                    <table className="table">
+                      <thead className="table-header">
+                        <tr>
+                          <th className="table-header-cell w-12">
+                            <input
+                              type="checkbox"
+                              checked={invoices.filter(inv => inv.status === 'pending').length > 0 && 
+                                      selectedInvoices.size === invoices.filter(inv => inv.status === 'pending').length}
+                              onChange={handleSelectAll}
+                              className="w-4 h-4 text-sb-blue border-sb-grey-2-20 rounded focus:ring-sb-blue"
+                            />
+                          </th>
+                          <th className="table-header-cell">Invoice</th>
+                          <th className="table-header-cell">Vendor / Category</th>
+                          <th className="table-header-cell">Amount</th>
+                          <th className="table-header-cell">Status</th>
+                          <th className="table-header-cell">Confidence</th>
+                          <th className="table-header-cell">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="table-body">
+                        {invoices.map((invoice) => (
+                          <tr key={invoice.id} className="table-row">
+                            <td className="table-cell">
+                              {invoice.status === 'pending' && (
+                                <input
+                                  type="checkbox"
+                                  checked={selectedInvoices.has(invoice.id)}
+                                  onChange={() => handleSelectInvoice(invoice.id)}
+                                  className="w-4 h-4 text-sb-blue border-sb-grey-2-20 rounded focus:ring-sb-blue"
+                                />
+                              )}
+                            </td>
+                            <td className="table-cell">
+                              <div className="flex items-center space-x-3">
+                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                                  isImageFile(invoice.filename)
+                                    ? 'bg-gradient-to-br from-sb-light-blue to-sb-blue'
+                                    : 'bg-gradient-to-br from-red-500 to-rose-600'
+                                }`}>
+                                  {isImageFile(invoice.filename) ? (
+                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                  ) : (
+                                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                                    </svg>
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="font-semibold text-sb-grey-1 truncate max-w-[180px]">{invoice.filename}</p>
+                                  <p className="text-xs text-sb-grey-2-50">{new Date(invoice.upload_date).toLocaleDateString()}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="table-cell">
+                              <div className="min-w-0">
+                                {invoice.vendor_name ? (
+                                  <p className="font-medium text-sb-grey-1 truncate max-w-[150px]">{invoice.vendor_name}</p>
+                                ) : (
+                                  <p className="text-sb-grey-2-50 text-sm">—</p>
+                                )}
+                                {invoice.category && (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-sb-blue-10 text-sb-dark-blue mt-1">
+                                    {invoice.category}
+                                  </span>
+                                )}
+                                {invoice.detected_language && invoice.detected_language !== 'English' && (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-sb-light-blue-10 text-sb-dark-blue mt-1 ml-1">
+                                    {invoice.detected_language}
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="table-cell">
+                              {invoice.total_amount != null ? (
+                                <span className="font-semibold text-sb-grey-1">
+                                  {invoice.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </span>
+                              ) : (
+                                <span className="text-sb-grey-2-50">—</span>
+                              )}
+                            </td>
+                            <td className="table-cell">
+                              <div className="flex items-center space-x-2">
+                                {getStatusBadge(invoice.status)}
+                                {invoice.is_duplicate && (
+                                  <span 
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200"
+                                    title={invoice.duplicate_of_id ? `Duplicate of invoice #${invoice.duplicate_of_id}` : 'Potential duplicate detected'}
+                                  >
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    Dup
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="table-cell">
+                              {invoice.confidence_score != null ? (
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-16 h-2 bg-sb-grey-2-20 rounded-full overflow-hidden">
+                                    <div 
+                                      className={`h-full rounded-full ${
+                                        invoice.confidence_score >= 0.8 ? 'bg-sb-green' :
+                                        invoice.confidence_score >= 0.6 ? 'bg-amber-500' : 'bg-red-500'
+                                      }`}
+                                      style={{ width: `${invoice.confidence_score * 100}%` }}
+                                    ></div>
+                                  </div>
+                                  <span className={`text-xs font-semibold ${
+                                    invoice.confidence_score >= 0.8 ? 'text-sb-green' :
+                                    invoice.confidence_score >= 0.6 ? 'text-amber-600' : 'text-red-600'
+                                  }`}>
+                                    {Math.round(invoice.confidence_score * 100)}%
+                                  </span>
+                                </div>
+                              ) : (
+                                <span className="text-sb-grey-2-50 text-sm">—</span>
+                              )}
+                            </td>
+                            <td className="table-cell">
+                              <div className="flex items-center space-x-2">
+                                {invoice.status === 'pending' && (
+                                  <button
+                                    onClick={() => handleProcess(invoice.id)}
+                                    disabled={processing.has(invoice.id)}
+                                    className="btn-primary py-1.5 px-4 text-xs"
+                                  >
+                                    {processing.has(invoice.id) ? (
+                                      <span className="flex items-center space-x-1">
+                                        <div className="spinner w-3 h-3"></div>
+                                        <span>Processing...</span>
+                                      </span>
+                                    ) : 'Process'}
+                                  </button>
+                                )}
+                                {invoice.status === 'completed' && (
+                                  <button
+                                    onClick={() => {
+                                      sessionStorage.setItem('invoiceListSource', 'true');
+                                      router.push(`/invoices/${invoice.id}`);
+                                    }}
+                                    className="btn-success py-1.5 px-4 text-xs"
+                                  >
+                                    View & Edit
+                                  </button>
+                                )}
+                                {invoice.status === 'error' && (
+                                  <>
+                                    <button
+                                      onClick={() => handleProcess(invoice.id)}
+                                      disabled={processing.has(invoice.id)}
+                                      className="inline-flex items-center px-4 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg shadow hover:from-amber-600 hover:to-orange-600"
+                                    >
+                                      Retry
+                                    </button>
+                                    {invoice.error_message && (
+                                      <span
+                                        className="text-red-500 cursor-help"
+                                        title={invoice.error_message}
+                                      >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                      </span>
+                                    )}
+                                  </>
+                                )}
+                                <button
+                                  onClick={() => handleDelete(invoice.id)}
+                                  className="p-1.5 text-sb-grey-2-50 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                  title="Delete invoice"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               )}
             </div>
           )}
